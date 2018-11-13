@@ -13,13 +13,13 @@ namespace Flarum\Statistics\Listener;
 
 use DateTime;
 use DateTimeZone;
-use Flarum\Core\Discussion;
-use Flarum\Core\Post;
-use Flarum\Core\User;
-use Flarum\Event\ConfigureWebApp;
+use Flarum\Discussion\Discussion;
+use Flarum\Frontend\HtmlDocument;
+use Flarum\Post\Post;
+use Flarum\User\User;
+use Flarum\Frontend\Event\Rendering;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Events\Dispatcher;
 
 class AddStatisticsData
 {
@@ -36,34 +36,21 @@ class AddStatisticsData
         $this->settings = $settings;
     }
 
-    /**
-     * @param Dispatcher $events
-     */
-    public function subscribe(Dispatcher $events)
+    public function __invoke(HtmlDocument $view)
     {
-        $events->listen(ConfigureWebApp::class, [$this, 'addStatisticsData']);
-    }
-
-    /**
-     * @param ConfigureWebApp $event
-     */
-    public function addStatisticsData(ConfigureWebApp $event)
-    {
-        if ($event->isAdmin()) {
-            $event->view->setVariable('statistics', array_merge(
-                $this->getStatistics(),
-                ['timezoneOffset' => $this->getUserTimezone()->getOffset(new DateTime)]
-            ));
-        }
+        $view->payload['statistics'] = array_merge(
+            $this->getStatistics(),
+            ['timezoneOffset' => $this->getUserTimezone()->getOffset(new DateTime)]
+        );
     }
 
     private function getStatistics()
     {
         $entities = [
-            'users' => [User::query(), 'join_time'],
-            'activeUsers' => [User::query(), 'last_seen_time'],
-            'discussions' => [Discussion::query(), 'start_time'],
-            'posts' => [Post::where('type', 'comment'), 'time']
+            'users' => [User::query(), 'joined_at'],
+            'activeUsers' => [User::query(), 'last_seen_at'],
+            'discussions' => [Discussion::query(), 'created_at'],
+            'posts' => [Post::where('type', 'comment'), 'created_at']
         ];
 
         return array_map(function ($entity) {
@@ -93,7 +80,7 @@ class AddStatisticsData
             ->selectRaw('COUNT(id) as count')
             ->where($column, '>', new DateTime('-24 months'))
             ->groupBy('time_group')
-            ->lists('count', 'time_group');
+            ->pluck('count', 'time_group');
 
         // Now that we have the aggregated statistics, convert each time group
         // into a UNIX timestamp.
@@ -122,5 +109,4 @@ class AddStatisticsData
     {
         return new DateTimeZone($this->settings->get('flarum-statistics.timezone', date_default_timezone_get()));
     }
-
 }

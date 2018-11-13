@@ -11,9 +11,9 @@ import DashboardWidget from 'flarum/components/DashboardWidget';
 import SelectDropdown from 'flarum/components/SelectDropdown';
 import Button from 'flarum/components/Button';
 import icon from 'flarum/helpers/icon';
-import listItems from 'flarum/helpers/listItems';
-import ItemList from 'flarum/utils/ItemList';
 import abbreviateNumber from 'flarum/utils/abbreviateNumber';
+
+import { Chart } from 'frappe-charts/dist/frappe-charts.esm.js';
 
 export default class StatisticsWidget extends DashboardWidget {
   init() {
@@ -53,13 +53,13 @@ export default class StatisticsWidget extends DashboardWidget {
         <div className="StatisticsWidget-labels">
           <div className="StatisticsWidget-label">{app.translator.trans('flarum-statistics.admin.statistics.total_label')}</div>
           <div className="StatisticsWidget-label">
-            <SelectDropdown buttonClassName="Button Button--text" caretIcon="caret-down">
+            <SelectDropdown buttonClassName="Button Button--text" caretIcon="fas fa-caret-down">
               {Object.keys(this.periods).map(period => (
                 <Button
                   active={period === this.selectedPeriod}
                   onclick={this.changePeriod.bind(this, period)}
-                  icon={period === this.selectedPeriod ? 'check' : true}>
-                  {app.translator.trans('flarum-statistics.admin.statistics.'+period+'_label')}
+                  icon={period === this.selectedPeriod ? 'fas fa-check' : true}>
+                  {app.translator.trans(`flarum-statistics.admin.statistics.${period}_label`)}
                 </Button>
               ))}
             </SelectDropdown>
@@ -90,7 +90,7 @@ export default class StatisticsWidget extends DashboardWidget {
                 {abbreviateNumber(thisPeriodCount)}{' '}
                 {periodChange ? (
                   <span className={'StatisticsWidget-change StatisticsWidget-change--'+(periodChange > 0 ? 'up' : 'down')}>
-                    {icon('arrow-'+(periodChange > 0 ? 'up' : 'down'))}
+                    {icon('fas fa-arrow-'+(periodChange > 0 ? 'up' : 'down'))}
                     {Math.abs(periodChange.toFixed(1))}%
                   </span>
                 ) : ''}
@@ -141,21 +141,28 @@ export default class StatisticsWidget extends DashboardWidget {
       {values: lastPeriod},
       {values: thisPeriod}
     ];
+    const data = {
+      labels,
+      datasets
+    };
 
     if (!context.chart) {
-      context.chart = new Chart({
-        parent: elm,
-        data: {labels, datasets},
+      context.chart = new Chart(elm, {
+        data,
         type: 'line',
-        height: 200,
-        x_axis_mode: 'tick',
-        y_axis_mode: 'span',
-        is_series: 1,
-        show_dots: 0,
-        colors: ['rgba(127, 127, 127, 0.2)', app.forum.attribute('themePrimaryColor')]
+        height: 280,
+        axisOptions: {
+          xAxisMode: 'tick',
+          yAxisMode: 'span',
+          xIsSeries: true
+        },
+        lineOptions: {
+          hideDots: 1
+        },
+        colors: ['black', app.forum.attribute('themePrimaryColor')]
       });
     } else {
-      context.chart.update_values(datasets, labels);
+      context.chart.update(data);
     }
 
     context.entity = this.selectedEntity;
