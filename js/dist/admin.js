@@ -1,2 +1,4233 @@
-module.exports=function(t){var e={};function s(i){if(e[i])return e[i].exports;var a=e[i]={i:i,l:!1,exports:{}};return t[i].call(a.exports,a,a.exports,s),a.l=!0,a.exports}return s.m=t,s.c=e,s.d=function(t,e,i){s.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:i})},s.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},s.t=function(t,e){if(1&e&&(t=s(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var i=Object.create(null);if(s.r(i),Object.defineProperty(i,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var a in t)s.d(i,a,function(e){return t[e]}.bind(null,a));return i},s.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return s.d(e,"a",e),e},s.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},s.p="",s(s.s=8)}([function(t,e){t.exports=flarum.core.compat["utils/abbreviateNumber"]},function(t,e){t.exports=flarum.core.compat.app},function(t,e){t.exports=flarum.core.compat.extend},function(t,e){t.exports=flarum.core.compat["components/DashboardPage"]},function(t,e){t.exports=flarum.core.compat["components/DashboardWidget"]},function(t,e){t.exports=flarum.core.compat["components/SelectDropdown"]},function(t,e){t.exports=flarum.core.compat["components/Button"]},function(t,e){t.exports=flarum.core.compat["helpers/icon"]},function(t,e,s){"use strict";s.r(e);var i=s(1),a=s.n(i),n=s(2),r=s(3),o=s.n(r);var l=s(4),h=s.n(l),d=s(5),c=s.n(d),p=s(6),u=s.n(p),f=s(7),g=s.n(f),y=s(0),b=s.n(y);function x(t,e){return"string"==typeof t?(e||document).querySelector(t):t||null}function v(t){let e=t.getBoundingClientRect();return{top:e.top+(document.documentElement.scrollTop||document.body.scrollTop),left:e.left+(document.documentElement.scrollLeft||document.body.scrollLeft)}}x.create=((t,e)=>{var s=document.createElement(t);for(var i in e){var a=e[i];if("inside"===i)x(a).appendChild(s);else if("around"===i){var n=x(a);n.parentNode.insertBefore(s,n),s.appendChild(n)}else"styles"===i?"object"==typeof a&&Object.keys(a).map(t=>{s.style[t]=a[t]}):i in s?s[i]=a:s.setAttribute(i,a)}return s});const w={margins:{top:10,bottom:10,left:20,right:20},paddings:{top:20,bottom:40,left:30,right:10},baseHeight:240,titleHeight:20,legendHeight:30,titleFontSize:12};function A(t){return t.titleHeight+t.margins.top+t.paddings.top}function P(t){return t.margins.left+t.paddings.left}function k(t){return t.margins.top+t.margins.bottom+t.paddings.top+t.paddings.bottom+t.titleHeight+t.legendHeight}function C(t){return t.margins.left+t.margins.right+t.paddings.left+t.paddings.right}const D=700,L=400,T=["line","bar"],M=100,N=.5,O=.01,E=4,S=20,$=2,z=5,W=10,H=7,F=5,I=["light-blue","blue","violet","red","orange","yellow","green","light-green","purple","magenta","light-grey","dark-grey"],R={bar:I,line:I,pie:I,percentage:I,heatmap:["#ebedf0","#c6e48b","#7bc96f","#239a3b","#196127"]},j=Math.PI/180,Y=360;class _{constructor({parent:t=null,colors:e=[]}){this.parent=t,this.colors=e,this.titleName="",this.titleValue="",this.listValues=[],this.titleValueFirst=0,this.x=0,this.y=0,this.top=0,this.left=0,this.setup()}setup(){this.makeTooltip()}refresh(){this.fill(),this.calcPosition()}makeTooltip(){this.container=x.create("div",{inside:this.parent,className:"graph-svg-tip comparison",innerHTML:'<span class="title"></span>\n\t\t\t\t<ul class="data-point-list"></ul>\n\t\t\t\t<div class="svg-pointer"></div>'}),this.hideTip(),this.title=this.container.querySelector(".title"),this.dataPointList=this.container.querySelector(".data-point-list"),this.parent.addEventListener("mouseleave",()=>{this.hideTip()})}fill(){let t;this.index&&this.container.setAttribute("data-point-index",this.index),t=this.titleValueFirst?`<strong>${this.titleValue}</strong>${this.titleName}`:`${this.titleName}<strong>${this.titleValue}</strong>`,this.title.innerHTML=t,this.dataPointList.innerHTML="",this.listValues.map((t,e)=>{const s=this.colors[e]||"black";let i=0===t.formatted||t.formatted?t.formatted:t.value,a=x.create("li",{styles:{"border-top":`3px solid ${s}`},innerHTML:`<strong style="display: block;">${0===i||i?i:""}</strong>\n\t\t\t\t\t${t.title?t.title:""}`});this.dataPointList.appendChild(a)})}calcPosition(){let t=this.container.offsetWidth;this.top=this.y-this.container.offsetHeight-F,this.left=this.x-t/2;let e=this.parent.offsetWidth-t,s=this.container.querySelector(".svg-pointer");if(this.left<0)s.style.left=`calc(50% - ${-1*this.left}px)`,this.left=0;else if(this.left>e){let t=`calc(50% + ${this.left-e}px)`;s.style.left=t,this.left=e}else s.style.left="50%"}setValues(t,e,s={},i=[],a=-1){this.titleName=s.name,this.titleValue=s.value,this.listValues=i,this.x=t,this.y=e,this.titleValueFirst=s.valueFirst||0,this.index=a,this.refresh()}hideTip(){this.container.style.top="0px",this.container.style.left="0px",this.container.style.opacity="0"}showTip(){this.container.style.top=this.top+"px",this.container.style.left=this.left+"px",this.container.style.opacity="1"}}function B(t){return parseFloat(t.toFixed(2))}function V(t,e,s,i=!1){s||(s=i?t[0]:t[t.length-1]);let a=new Array(Math.abs(e)).fill(s);return t=i?a.concat(t):t.concat(a)}function U(t,e){return(t+"").length*e}function G(t,e){return{x:Math.sin(t*j)*e,y:Math.cos(t*j)*e}}function q(t,e){let s,i;return t<=e?(s=e-t,i=t):(s=t-e,i=e),[s,i]}function X(t,e,s=e.length-t.length){return s>0?t=V(t,s):e=V(e,s),[t,e]}const J={"light-blue":"#7cd6fd",blue:"#5e64ff",violet:"#743ee2",red:"#ff5858",orange:"#ffa00a",yellow:"#feef72",green:"#28a745","light-green":"#98d85b",purple:"#b554ff",magenta:"#ffa3ef",black:"#36114C",grey:"#bdd3e6","light-grey":"#f0f4f7","dark-grey":"#b8c2cc"};function K(t){return t>255?255:t<0?0:t}function Q(t,e){let s=Z(t),i=!1;"#"==s[0]&&(s=s.slice(1),i=!0);let a=parseInt(s,16),n=K((a>>16)+e),r=K((a>>8&255)+e);return(i?"#":"")+(K((255&a)+e)|r<<8|n<<16).toString(16)}const Z=t=>J[t]||t,tt=6,et=4,st=10,it="#dadada",at="#555b51";function nt(t,e){return"string"==typeof t?(e||document).querySelector(t):t||null}function rt(t,e){var s=document.createElementNS("http://www.w3.org/2000/svg",t);for(var i in e){var a=e[i];if("inside"===i)nt(a).appendChild(s);else if("around"===i){var n=nt(a);n.parentNode.insertBefore(s,n),s.appendChild(n)}else"styles"===i?"object"==typeof a&&Object.keys(a).map(t=>{s.style[t]=a[t]}):("className"===i&&(i="class"),"innerHTML"===i?s.textContent=a:s.setAttribute(i,a))}return s}function ot(t,e,s,i){return rt("stop",{inside:t,style:`stop-color: ${s}`,offset:e,"stop-opacity":i})}function lt(t,e="",s){let i={className:t,transform:e};return s&&(i.inside=s),rt("g",i)}function ht(t,e="",s="none",i="none"){return rt("path",{className:e,d:t,styles:{stroke:s,fill:i}})}function dt(t,e,s=!1){let i="path-fill-gradient-"+e+"-"+(s?"lighter":"default"),a=function(t,e){return rt("linearGradient",{inside:t,id:e,x1:0,x2:0,y1:0,y2:1})}(t,i),n=[1,.6,.2];return s&&(n=[.4,.2,0]),ot(a,"0%",e,n[0]),ot(a,"50%",e,n[1]),ot(a,"100%",e,n[2]),i}function ct(t,e,s,i,a="none",n={}){let r={className:t,x:e,y:s,width:i,height:i,fill:a};return Object.keys(n).map(t=>{r[t]=n[t]}),rt("rect",r)}function pt(t,e,s,i,a={}){let n=a.fontSize||st;return rt("text",{className:t,x:e,y:s,dy:(void 0!==a.dy?a.dy:n/2)+"px","font-size":n+"px",fill:a.fill||at,"text-anchor":a.textAnchor||"start",innerHTML:i})}function ut(t,e,s,i,a={}){a.stroke||(a.stroke=it),a.lineType||(a.lineType="");let n=rt("line",{className:"line-horizontal "+a.className+("dashed"===a.lineType?"dashed":""),x1:s,x2:i,y1:0,y2:0,styles:{stroke:a.stroke}}),r=rt("text",{x:s<i?s-et:s+et,y:0,dy:st/2-2+"px","font-size":st+"px","text-anchor":s<i?"end":"start",innerHTML:e+""}),o=rt("g",{transform:`translate(0, ${t})`,"stroke-opacity":1});return 0!==r&&"0"!==r||(o.style.stroke="rgba(27, 31, 35, 0.6)"),o.appendChild(n),o.appendChild(r),o}function mt(t,e,s,i={}){i.pos||(i.pos="bottom"),i.offset||(i.offset=0),i.mode||(i.mode="span"),i.stroke||(i.stroke=it),i.className||(i.className="");let a=s+tt,n="span"===i.mode?-1*tt:s;return"tick"===i.mode&&"top"===i.pos&&(a=-1*tt,n=0),function(t,e,s,i,a={}){a.stroke||(a.stroke=it);let n=rt("line",{className:"line-vertical "+a.className,x1:0,x2:0,y1:s,y2:i,styles:{stroke:a.stroke}}),r=rt("text",{x:0,y:s>i?s+et:s-et-st,dy:st+"px","font-size":st+"px","text-anchor":"middle",innerHTML:e+""}),o=rt("g",{transform:`translate(${t}, 0)`});return o.appendChild(n),o.appendChild(r),o}(t,e,a,n,{stroke:i.stroke,className:i.className,lineType:i.lineType})}let ft={bar:t=>{let e;"rect"!==t.nodeName&&(e=t.getAttribute("transform"),t=t.childNodes[0]);let s=t.cloneNode();return s.style.fill="#000000",s.style.opacity="0.4",e&&s.setAttribute("transform",e),s},dot:t=>{let e;"circle"!==t.nodeName&&(e=t.getAttribute("transform"),t=t.childNodes[0]);let s=t.cloneNode(),i=t.getAttribute("r"),a=t.getAttribute("fill");return s.setAttribute("r",parseInt(i)+4),s.setAttribute("fill",a),s.style.opacity="0.6",e&&s.setAttribute("transform",e),s},heat_square:t=>{let e;"circle"!==t.nodeName&&(e=t.getAttribute("transform"),t=t.childNodes[0]);let s=t.cloneNode(),i=t.getAttribute("r"),a=t.getAttribute("fill");return s.setAttribute("r",parseInt(i)+4),s.setAttribute("fill",a),s.style.opacity="0.6",e&&s.setAttribute("transform",e),s}},gt={bar:(t,e)=>{let s;"rect"!==t.nodeName&&(s=t.getAttribute("transform"),t=t.childNodes[0]);let i=["x","y","width","height"];Object.values(t.attributes).filter(t=>i.includes(t.name)&&t.specified).map(t=>{e.setAttribute(t.name,t.nodeValue)}),s&&e.setAttribute("transform",s)},dot:(t,e)=>{let s;"circle"!==t.nodeName&&(s=t.getAttribute("transform"),t=t.childNodes[0]);let i=["cx","cy"];Object.values(t.attributes).filter(t=>i.includes(t.name)&&t.specified).map(t=>{e.setAttribute(t.name,t.nodeValue)}),s&&e.setAttribute("transform",s)},heat_square:(t,e)=>{let s;"circle"!==t.nodeName&&(s=t.getAttribute("transform"),t=t.childNodes[0]);let i=["cx","cy"];Object.values(t.attributes).filter(t=>i.includes(t.name)&&t.specified).map(t=>{e.setAttribute(t.name,t.nodeValue)}),s&&e.setAttribute("transform",s)}};const yt=350,bt=350,xt=yt,vt=250,wt="easein";function At(t,e,s,i){let a="string"==typeof e?e:e.join(", ");return[t,{transform:s.join(", ")},i,wt,"translate",{transform:a}]}function Pt(t,e,s){return At(t,[0,s],[0,e],xt)}const kt={ease:"0.25 0.1 0.25 1",linear:"0 0 1 1",easein:"0.1 0.8 0.2 1",easeout:"0 0 0.58 1",easeinout:"0.42 0 0.58 1"};function Ct(t,e){t.style.transform=e,t.style.webkitTransform=e,t.style.msTransform=e,t.style.mozTransform=e,t.style.oTransform=e}function Dt(t,e){let s=[],i=[];e.map(t=>{let e,a,n=t[0],r=n.parentNode;t[0]=n,[e,a]=function(t,e,s,i="linear",a,n={}){let r=t.cloneNode(!0),o=t.cloneNode(!0);for(var l in e){let d;d="transform"===l?document.createElementNS("http://www.w3.org/2000/svg","animateTransform"):document.createElementNS("http://www.w3.org/2000/svg","animate");let c=n[l]||t.getAttribute(l),p=e[l],u={attributeName:l,from:c,to:p,begin:"0s",dur:s/1e3+"s",values:c+";"+p,keySplines:kt[i],keyTimes:"0;1",calcMode:"spline",fill:"freeze"};for(var h in a&&(u.type=a),u)d.setAttribute(h,u[h]);r.appendChild(d),a?o.setAttribute(l,`translate(${p})`):o.setAttribute(l,p)}return[r,o]}(...t),s.push(a),i.push([e,r]),r.replaceChild(e,n)});let a=t.cloneNode(!0);return i.map((t,i)=>{t[1].replaceChild(s[i],t[0]),e[i][0]=s[i]}),a}const Lt=".chart-container{position:relative;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif}.chart-container .axis,.chart-container .chart-label{fill:#555b51}.chart-container .axis line,.chart-container .chart-label line{stroke:#dadada}.chart-container .dataset-units circle{stroke:#fff;stroke-width:2}.chart-container .dataset-units path{fill:none;stroke-opacity:1;stroke-width:2px}.chart-container .dataset-path{stroke-width:2px}.chart-container .path-group path{fill:none;stroke-opacity:1;stroke-width:2px}.chart-container line.dashed{stroke-dasharray:5,3}.chart-container .axis-line .specific-value{text-anchor:start}.chart-container .axis-line .y-line{text-anchor:end}.chart-container .axis-line .x-line{text-anchor:middle}.chart-container .legend-dataset-text{fill:#6c7680;font-weight:600}.graph-svg-tip{position:absolute;z-index:99999;padding:10px;font-size:12px;color:#959da5;text-align:center;background:rgba(0,0,0,.8);border-radius:3px}.graph-svg-tip ul{padding-left:0;display:flex}.graph-svg-tip ol{padding-left:0;display:flex}.graph-svg-tip ul.data-point-list li{min-width:90px;flex:1;font-weight:600}.graph-svg-tip strong{color:#dfe2e5;font-weight:600}.graph-svg-tip .svg-pointer{position:absolute;height:5px;margin:0 0 0 -5px;content:' ';border:5px solid transparent;border-top-color:rgba(0,0,0,.8)}.graph-svg-tip.comparison{padding:0;text-align:left;pointer-events:none}.graph-svg-tip.comparison .title{display:block;padding:10px;margin:0;font-weight:600;line-height:1;pointer-events:none}.graph-svg-tip.comparison ul{margin:0;white-space:nowrap;list-style:none}.graph-svg-tip.comparison li{display:inline-block;padding:5px 10px}";let Tt;class Mt{constructor(t,e){if(this.parent="string"==typeof t?document.querySelector(t):t,!(this.parent instanceof HTMLElement))throw new Error("No `parent` element to render on was provided.");this.rawChartArgs=e,this.title=e.title||"",this.type=e.type||"",this.realData=this.prepareData(e.data),this.data=this.prepareFirstData(this.realData),this.colors=this.validateColors(e.colors,this.type),this.config={showTooltip:1,showLegend:1,isNavigable:e.isNavigable||0,animate:1},this.measures=JSON.parse(JSON.stringify(w));let s=this.measures;this.setMeasures(e),this.title.length||(s.titleHeight=0),this.config.showLegend||(s.legendHeight=0),this.argHeight=e.height||s.baseHeight,this.state={},this.options={},this.initTimeout=D,this.config.isNavigable&&(this.overlays=[]),this.configure(e)}prepareData(t){return t}prepareFirstData(t){return t}validateColors(t,e){const s=[];return(t=(t||[]).concat(R[e])).forEach(t=>{const e=Z(t);!function(t){return/(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(t)}(e)?console.warn('"'+t+'" is not a valid color.'):s.push(e)}),s}setMeasures(){}configure(){let t=this.argHeight;this.baseHeight=t,this.height=t-k(this.measures),Tt=this.boundDrawFn.bind(this),window.addEventListener("resize",Tt),window.addEventListener("orientationchange",this.boundDrawFn.bind(this))}boundDrawFn(){this.draw(!0)}unbindWindowEvents(){window.removeEventListener("resize",Tt),window.removeEventListener("orientationchange",this.boundDrawFn.bind(this))}setup(){this.makeContainer(),this.updateWidth(),this.makeTooltip(),this.draw(!1,!0)}makeContainer(){this.parent.innerHTML="";let t={inside:this.parent,className:"chart-container"};this.independentWidth&&(t.styles={width:this.independentWidth+"px"}),this.container=x.create("div",t)}makeTooltip(){this.tip=new _({parent:this.container,colors:this.colors}),this.bindTooltip()}bindTooltip(){}draw(t=!1,e=!1){this.updateWidth(),this.calc(t),this.makeChartArea(),this.setupComponents(),this.components.forEach(t=>t.setup(this.drawArea)),this.render(this.components,!1),e&&(this.data=this.realData,setTimeout(()=>{this.update(this.data)},this.initTimeout)),this.renderLegend(),this.setupNavigation(e)}calc(){}updateWidth(){var t,e,s;this.baseWidth=(t=this.parent,e=window.getComputedStyle(t),s=parseFloat(e.paddingLeft)+parseFloat(e.paddingRight),t.clientWidth-s),this.width=this.baseWidth-C(this.measures)}makeChartArea(){this.svg&&this.container.removeChild(this.svg);let t=this.measures;var e,s,i,a;this.svg=(e=this.container,s="frappe-chart chart",i=this.baseWidth,a=this.baseHeight,rt("svg",{className:s,inside:e,width:i,height:a})),this.svgDefs=rt("defs",{inside:this.svg}),this.title.length&&(this.titleEL=pt("title",t.margins.left,t.margins.top,this.title,{fontSize:t.titleFontSize,fill:"#666666",dy:t.titleFontSize}));let n=A(t);this.drawArea=lt(this.type+"-chart chart-draw-area",`translate(${P(t)}, ${n})`),this.config.showLegend&&(n+=this.height+t.paddings.bottom,this.legendArea=lt("chart-legend",`translate(${P(t)}, ${n})`)),this.title.length&&this.svg.appendChild(this.titleEL),this.svg.appendChild(this.drawArea),this.config.showLegend&&this.svg.appendChild(this.legendArea),this.updateTipOffset(P(t),A(t))}updateTipOffset(t,e){this.tip.offset={x:t,y:e}}setupComponents(){this.components=new Map}update(t){t||console.error("No data to update."),this.data=this.prepareData(t),this.calc(),this.render()}render(t=this.components,e=!0){this.config.isNavigable&&this.overlays.map(t=>t.parentNode.removeChild(t));let s=[];t.forEach(t=>{s=s.concat(t.update(e))}),s.length>0?(!function(t,e,s){if(0===s.length)return;let i=Dt(e,s);e.parentNode==t&&(t.removeChild(e),t.appendChild(i)),setTimeout(()=>{i.parentNode==t&&(t.removeChild(i),t.appendChild(e))},vt)}(this.container,this.svg,s),setTimeout(()=>{t.forEach(t=>t.make()),this.updateNav()},L)):(t.forEach(t=>t.make()),this.updateNav())}updateNav(){this.config.isNavigable&&(this.makeOverlay(),this.bindUnits())}renderLegend(){}setupNavigation(t=!1){this.config.isNavigable&&t&&(this.bindOverlay(),this.keyActions={13:this.onEnterKey.bind(this),37:this.onLeftArrow.bind(this),38:this.onUpArrow.bind(this),39:this.onRightArrow.bind(this),40:this.onDownArrow.bind(this)},document.addEventListener("keydown",t=>{(function(t){var e=t.getBoundingClientRect();return e.top>=0&&e.left>=0&&e.bottom<=(window.innerHeight||document.documentElement.clientHeight)&&e.right<=(window.innerWidth||document.documentElement.clientWidth)})(this.container)&&(t=t||window.event,this.keyActions[t.keyCode]&&this.keyActions[t.keyCode]())}))}makeOverlay(){}updateOverlay(){}bindOverlay(){}bindUnits(){}onLeftArrow(){}onRightArrow(){}onUpArrow(){}onDownArrow(){}onEnterKey(){}addDataPoint(){}removeDataPoint(){}getDataPoint(){}setCurrentDataPoint(){}updateDataset(){}export(){let t=function(t){let e=t.cloneNode(!0);e.classList.add("chart-container"),e.setAttribute("xmlns","http://www.w3.org/2000/svg"),e.setAttribute("xmlns:xlink","http://www.w3.org/1999/xlink");let s=x.create("style",{innerHTML:Lt});e.insertBefore(s,e.firstChild);let i=x.create("div");return i.appendChild(e),i.innerHTML}(this.svg);!function(t,e){var s=document.createElement("a");s.style="display: none";var i=new Blob(e,{type:"image/svg+xml; charset=utf-8"}),a=window.URL.createObjectURL(i);s.href=a,s.download=t,document.body.appendChild(s),s.click(),setTimeout(function(){document.body.removeChild(s),window.URL.revokeObjectURL(a)},300)}(this.title||"Chart",[t])}}class Nt extends Mt{constructor(t,e){super(t,e)}configure(t){super.configure(t),this.config.maxSlices=t.maxSlices||20,this.config.maxLegendPoints=t.maxLegendPoints||20}calc(){let t=this.state,e=this.config.maxSlices;t.sliceTotals=[];let s=this.data.labels.map((t,e)=>{let s=0;return this.data.datasets.map(t=>{s+=t.values[e]}),[s,t]}).filter(t=>t[0]>=0),i=s;if(s.length>e){s.sort((t,e)=>e[0]-t[0]),i=s.slice(0,e-1);let t=s.slice(e-1),a=0;t.map(t=>{a+=t[0]}),i.push([a,"Rest"]),this.colors[e-1]="grey"}t.labels=[],i.map(e=>{t.sliceTotals.push(e[0]),t.labels.push(e[1])}),t.grandTotal=t.sliceTotals.reduce((t,e)=>t+e,0),this.center={x:this.width/2,y:this.height/2}}renderLegend(){let t=this.state;this.legendArea.textContent="",this.legendTotals=t.sliceTotals.slice(0,this.config.maxLegendPoints);let e=0,s=0;this.legendTotals.map((i,a)=>{let n=Math.floor((this.width-C(this.measures))/110);e>n&&(e=0,s+=20);let r=function(t,e,s,i="none",a){let n={className:"legend-dot",cx:0,cy:0,r:s,fill:i},r=rt("text",{className:"legend-dataset-text",x:0,y:0,dx:st+"px",dy:st/3+"px","font-size":1.2*st+"px","text-anchor":"start",fill:at,innerHTML:a}),o=rt("g",{transform:`translate(${t}, ${e})`});return o.appendChild(rt("circle",n)),o.appendChild(r),o}(110*e+5,s,5,this.colors[a],`${t.labels[a]}: ${i}`);this.legendArea.appendChild(r),e++})}}const Ot=12,Et=7,St=1e3,$t=86400,zt=["January","February","March","April","May","June","July","August","September","October","November","December"],Wt=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];function Ht(t){let e=new Date(t);return e.setMinutes(e.getMinutes()-e.getTimezoneOffset()),e}function Ft(t){let e=t.getDate(),s=t.getMonth()+1;return[t.getFullYear(),(s>9?"":"0")+s,(e>9?"":"0")+e].join("-")}function It(t){return new Date(t.getTime())}function Rt(t,e){let s=Bt(t);return Math.ceil(function(t,e){let s=$t*St;return(Ht(e)-Ht(t))/s}(s,e)/Et)}function jt(t,e){return t.getMonth()===e.getMonth()&&t.getFullYear()===e.getFullYear()}function Yt(t,e=!1){let s=zt[t];return e?s.slice(0,3):s}function _t(t,e){return new Date(e,t+1,0)}function Bt(t){let e=It(t);const s=e.getDay();return 0!==s&&Vt(e,-1*s),e}function Vt(t,e){t.setDate(t.getDate()+e)}class Ut{constructor({layerClass:t="",layerTransform:e="",constants:s,getData:i,makeElements:a,animateElements:n}){this.layerTransform=e,this.constants=s,this.makeElements=a,this.getData=i,this.animateElements=n,this.store=[],this.labels=[],this.layerClass=t,this.layerClass="function"==typeof this.layerClass?this.layerClass():this.layerClass,this.refresh()}refresh(t){this.data=t||this.getData()}setup(t){this.layer=lt(this.layerClass,this.layerTransform,t)}make(){this.render(this.data),this.oldData=this.data}render(t){this.store=this.makeElements(t),this.layer.textContent="",this.store.forEach(t=>{this.layer.appendChild(t)}),this.labels.forEach(t=>{this.layer.appendChild(t)})}update(t=!0){this.refresh();let e=[];return t&&(e=this.animateElements(this.data)||[]),e}}let Gt={pieSlices:{layerClass:"pie-slices",makeElements:t=>t.sliceStrings.map((e,s)=>{let i=ht(e,"pie-path","none",t.colors[s]);return i.style.transition="transform .3s;",i}),animateElements(t){return this.store.map((e,s)=>(function(t,e){return[t,{d:e},yt,wt]})(e,t.sliceStrings[s]))}},percentageBars:{layerClass:"percentage-bars",makeElements(t){return t.xPositions.map((e,s)=>{return function(t,e,s,i,a=$,n="none"){return rt("rect",{className:"percentage-bar",x:t,y:e,width:s,height:i,fill:n,styles:{stroke:Q(n,-25),"stroke-dasharray":`0, ${i+s}, ${s}, ${i}`,"stroke-width":a}})}(e,0,t.widths[s],this.constants.barHeight,this.constants.barDepth,t.colors[s])})},animateElements(t){if(t)return[]}},yAxis:{layerClass:"y axis",makeElements(t){return t.positions.map((e,s)=>(function(t,e,s,i={}){i.pos||(i.pos="left"),i.offset||(i.offset=0),i.mode||(i.mode="span"),i.stroke||(i.stroke=it),i.className||(i.className="");let a=-1*tt,n="span"===i.mode?s+tt:0;return"tick"===i.mode&&"right"===i.pos&&(a=s+tt,n=s),ut(t,e,a+=i.offset,n+=i.offset,{stroke:i.stroke,className:i.className,lineType:i.lineType})})(e,t.labels[s],this.constants.width,{mode:this.constants.mode,pos:this.constants.pos}))},animateElements(t){let e=t.positions,s=t.labels,i=this.oldData.positions,a=this.oldData.labels;return[i,e]=X(i,e),[a,s]=X(a,s),this.render({positions:i,labels:s}),this.store.map((t,s)=>Pt(t,e[s],i[s]))}},xAxis:{layerClass:"x axis",makeElements(t){return t.positions.map((e,s)=>mt(e,t.calcLabels[s],this.constants.height,{mode:this.constants.mode,pos:this.constants.pos}))},animateElements(t){let e=t.positions,s=t.calcLabels,i=this.oldData.positions,a=this.oldData.calcLabels;return[i,e]=X(i,e),[a,s]=X(a,s),this.render({positions:i,calcLabels:s}),this.store.map((t,s)=>(function(t,e,s){return At(t,[s,0],[e,0],xt)})(t,e[s],i[s]))}},yMarkers:{layerClass:"y-markers",makeElements(t){return t.map(t=>(function(t,e,s,i={}){i.labelPos||(i.labelPos="right");let a=rt("text",{className:"chart-label",x:"left"===i.labelPos?et:s-U(e,5)-et,y:0,dy:st/-2+"px","font-size":st+"px","text-anchor":"start",innerHTML:e+""}),n=ut(t,"",0,s,{stroke:i.stroke||it,className:i.className||"",lineType:i.lineType});return n.appendChild(a),n})(t.position,t.label,this.constants.width,{labelPos:t.options.labelPos,mode:"span",lineType:"dashed"}))},animateElements(t){[this.oldData,t]=X(this.oldData,t);let e=t.map(t=>t.position),s=t.map(t=>t.label),i=t.map(t=>t.options),a=this.oldData.map(t=>t.position);return this.render(a.map((t,e)=>({position:a[e],label:s[e],options:i[e]}))),this.store.map((t,s)=>Pt(t,e[s],a[s]))}},yRegions:{layerClass:"y-regions",makeElements(t){return t.map(t=>(function(t,e,s,i,a={}){let n=t-e,r=rt("rect",{className:"bar mini",styles:{fill:"rgba(228, 234, 239, 0.49)",stroke:it,"stroke-dasharray":`${s}, ${n}`},x:0,y:0,width:s,height:n});a.labelPos||(a.labelPos="right");let o=rt("text",{className:"chart-label",x:"left"===a.labelPos?et:s-U(i+"",4.5)-et,y:0,dy:st/-2+"px","font-size":st+"px","text-anchor":"start",innerHTML:i+""}),l=rt("g",{transform:`translate(0, ${e})`});return l.appendChild(r),l.appendChild(o),l})(t.startPos,t.endPos,this.constants.width,t.label,{labelPos:t.options.labelPos}))},animateElements(t){[this.oldData,t]=X(this.oldData,t);let e=t.map(t=>t.endPos),s=t.map(t=>t.label),i=t.map(t=>t.startPos),a=t.map(t=>t.options),n=this.oldData.map(t=>t.endPos),r=this.oldData.map(t=>t.startPos);this.render(n.map((t,e)=>({startPos:r[e],endPos:n[e],label:s[e],options:a[e]})));let o=[];return this.store.map((t,s)=>{o=o.concat(function(t,e,s,i){let a=e-s,n=t.childNodes[0],r=n.getAttribute("width");return[[n,{height:a,"stroke-dasharray":`${r}, ${a}`},xt,wt],At(t,[0,i],[0,s],xt)]}(t,i[s],e[s],n[s]))}),o}},heatDomain:{layerClass:function(){return"heat-domain domain-"+this.constants.index},makeElements(t){let{index:e,colWidth:s,rowHeight:i,squareSize:a,xTranslate:n}=this.constants,r=n,o=0;return this.serializedSubDomains=[],t.cols.map((t,n)=>{1===n&&this.labels.push(pt("domain-name",r,-12,Yt(e,!0).toUpperCase(),{fontSize:9})),t.map((t,e)=>{if(t.fill){let s={"data-date":t.yyyyMmDd,"data-value":t.dataValue,"data-day":e},i=ct("day",r,o,a,t.fill,s);this.serializedSubDomains.push(i)}o+=i}),o=0,r+=s}),this.serializedSubDomains},animateElements(t){if(t)return[]}},barGraph:{layerClass:function(){return"dataset-units dataset-bars dataset-"+this.constants.index},makeElements(t){let e=this.constants;return this.unitType="bar",this.units=t.yPositions.map((s,i)=>(function(t,e,s,i,a="",n=0,r=0,o={}){let[l,h]=q(e,o.zeroLine);h-=r,0===l&&(l=o.minHeight,h-=o.minHeight);let d=rt("rect",{className:"bar mini",style:`fill: ${i}`,"data-point-index":n,x:t,y:h,width:s,height:l});if((a+="")||a.length){d.setAttribute("y",0),d.setAttribute("x",0);let e=rt("text",{className:"data-point-value",x:s/2,y:0,dy:st/2*-1+"px","font-size":st+"px","text-anchor":"middle",innerHTML:a}),i=rt("g",{"data-point-index":n,transform:`translate(${t}, ${h})`});return i.appendChild(d),i.appendChild(e),i}return d})(t.xPositions[i],s,t.barWidth,e.color,t.labels[i],i,t.offsets[i],{zeroLine:t.zeroLine,barsWidth:t.barsWidth,minHeight:e.minHeight})),this.units},animateElements(t){let e=t.xPositions,s=t.yPositions,i=t.offsets,a=t.labels,n=this.oldData.xPositions,r=this.oldData.yPositions,o=this.oldData.offsets,l=this.oldData.labels;[n,e]=X(n,e),[r,s]=X(r,s),[o,i]=X(o,i),[l,a]=X(l,a),this.render({xPositions:n,yPositions:r,offsets:o,labels:a,zeroLine:this.oldData.zeroLine,barsWidth:this.oldData.barsWidth,barWidth:this.oldData.barWidth});let h=[];return this.store.map((a,n)=>{h=h.concat(function(t,e,s,i,a=0,n={}){let[r,o]=q(s,n.zeroLine);if(o-=a,"rect"!==t.nodeName){let s=[t.childNodes[0],{width:i,height:r},yt,wt],a=t.getAttribute("transform").split("(")[1].slice(0,-1);return[s,At(t,a,[e,o],xt)]}return[[t,{width:i,height:r,x:e,y:o},yt,wt]]}(a,e[n],s[n],t.barWidth,i[n],{zeroLine:t.zeroLine}))}),h}},lineGraph:{layerClass:function(){return"dataset-units dataset-line dataset-"+this.constants.index},makeElements(t){let e=this.constants;return this.unitType="dot",this.paths={},e.hideLine||(this.paths=function(t,e,s,i={},a={}){let n=e.map((e,s)=>t[s]+","+e).join("L"),r=ht("M"+n,"line-graph-path",s);if(i.heatline){let t=dt(a.svgDefs,s);r.style.stroke=`url(#${t})`}let o={path:r};if(i.regionFill){let e=dt(a.svgDefs,s,!0),i="M"+`${t[0]},${a.zeroLine}L`+n+`L${t.slice(-1)[0]},${a.zeroLine}`;o.region=ht(i,"region-fill","none",`url(#${e})`)}return o}(t.xPositions,t.yPositions,e.color,{heatline:e.heatline,regionFill:e.regionFill},{svgDefs:e.svgDefs,zeroLine:t.zeroLine})),this.units=[],e.hideDots||(this.units=t.yPositions.map((s,i)=>(function(t,e,s,i,a="",n=0){let r=rt("circle",{style:`fill: ${i}`,"data-point-index":n,cx:t,cy:e,r:s});if((a+="")||a.length){r.setAttribute("cy",0),r.setAttribute("cx",0);let i=rt("text",{className:"data-point-value",x:0,y:0,dy:st/2*-1-s+"px","font-size":st+"px","text-anchor":"middle",innerHTML:a}),o=rt("g",{"data-point-index":n,transform:`translate(${t}, ${e})`});return o.appendChild(r),o.appendChild(i),o}return r})(t.xPositions[i],s,t.radius,e.color,e.valuesOverPoints?t.values[i]:"",i))),Object.values(this.paths).concat(this.units)},animateElements(t){let e=t.xPositions,s=t.yPositions,i=t.values,a=this.oldData.xPositions,n=this.oldData.yPositions,r=this.oldData.values;[a,e]=X(a,e),[n,s]=X(n,s),[r,i]=X(r,i),this.render({xPositions:a,yPositions:n,values:i,zeroLine:this.oldData.zeroLine,radius:this.oldData.radius});let o=[];return Object.keys(this.paths).length&&(o=o.concat(function(t,e,s,i){let a=[],n=s.map((t,s)=>e[s]+","+t).join("L");const r=[t.path,{d:"M"+n},bt,wt];if(a.push(r),t.region){let s=`${e[0]},${i}L`,r=`L${e.slice(-1)[0]}, ${i}`;const o=[t.region,{d:"M"+s+n+r},bt,wt];a.push(o)}return a}(this.paths,e,s,t.zeroLine))),this.units.length&&this.units.map((t,i)=>{o=o.concat(function(t,e,s){if("circle"!==t.nodeName){let i=t.getAttribute("transform").split("(")[1].slice(0,-1);return[At(t,i,[e,s],xt)]}return[[t,{cx:e,cy:s},yt,wt]]}(t,e[i],s[i]))}),o}}};function qt(t,e,s){let i=Object.keys(Gt).filter(e=>t.includes(e)),a=Gt[i[0]];return Object.assign(a,{constants:e,getData:s}),new Ut(a)}function Xt(t){if(0===t)return[0,0];if(isNaN(t))return{mantissa:-6755399441055744,exponent:972};var e=t>0?1:-1;if(!isFinite(t))return{mantissa:4503599627370496*e,exponent:972};t=Math.abs(t);var s=Math.floor(Math.log10(t));return[e*(t/Math.pow(10,s)),s]}function Jt(t,e=0){let[s,i]=Xt(t),a=e?e/Math.pow(10,i):0,n=function(t,e=0){let s=Math.ceil(t),i=Math.floor(e),a=s-i,n=a,r=1;a>5&&(a%2!=0&&(a=++s-i),n=a/2,r=2),a<=2&&(r=a/(n=4)),0===a&&(n=5,r=1);let o=[];for(var l=0;l<=n;l++)o.push(i+r*l);return o}(s=s.toFixed(6),a);return n=n.map(t=>t*Math.pow(10,i))}function Kt(t){return t[1]-t[0]}function Qt(t,e){return B(e.zeroLine-t*e.scaleMultiplier)}const Zt=W+2,te=Zt;class ee extends Mt{constructor(t,e){super(t,e),this.barOptions=e.barOptions||{},this.lineOptions=e.lineOptions||{},this.type=e.type||"line",this.init=1,this.setup()}setMeasures(){this.data.datasets.length<=1&&(this.config.showLegend=0,this.measures.paddings.bottom=30)}configure(t){super.configure(t),t.axisOptions=t.axisOptions||{},t.tooltipOptions=t.tooltipOptions||{},this.config.xAxisMode=t.axisOptions.xAxisMode||"span",this.config.yAxisMode=t.axisOptions.yAxisMode||"span",this.config.xIsSeries=t.axisOptions.xIsSeries||0,this.config.formatTooltipX=t.tooltipOptions.formatTooltipX,this.config.formatTooltipY=t.tooltipOptions.formatTooltipY,this.config.valuesOverPoints=t.valuesOverPoints}prepareData(t=this.data){return function(t,e){t.labels=t.labels||[];let s=t.labels.length,i=t.datasets,a=new Array(s).fill(0);return i||(i=[{values:a}]),i.map(t=>{if(t.values){let e=t.values;e=(e=e.map(t=>isNaN(t)?0:t)).length>s?e.slice(0,s):V(e,s-e.length,0)}else t.values=a;t.chartType||(T.includes(e),t.chartType=e)}),t.yRegions&&t.yRegions.map(t=>{t.end<t.start&&([t.start,t.end]=[t.end,t.start])}),t}(t,this.type)}prepareFirstData(t=this.data){return function(t){let e=t.labels.length,s=new Array(e).fill(0),i={labels:t.labels.slice(0,-1),datasets:t.datasets.map(t=>({name:"",values:s.slice(0,-1),chartType:t.chartType}))};return t.yMarkers&&(i.yMarkers=[{value:0,label:""}]),t.yRegions&&(i.yRegions=[{start:0,end:0,label:""}]),i}(t)}calc(t=!1){this.calcXPositions(),t||this.calcYAxisParameters(this.getAllYValues(),"line"===this.type),this.makeDataByIndex()}calcXPositions(){let t=this.state,e=this.data.labels;t.datasetLength=e.length,t.unitWidth=this.width/t.datasetLength,t.xOffset=t.unitWidth/2,t.xAxis={labels:e,positions:e.map((e,s)=>B(t.xOffset+s*t.unitWidth))}}calcYAxisParameters(t,e="false"){const s=function(t,e=!1){let s=Math.max(...t),i=Math.min(...t),a=0,n=[];function r(t,e){let s=Jt(t),i=s[1]-s[0],a=0;for(var n=1;a<e;n++)a+=i,s.unshift(-1*a);return s}if(s>=0&&i>=0)a=Xt(s)[1],n=e?Jt(s,i):Jt(s);else if(s>0&&i<0){let t=Math.abs(i);s>=t?(a=Xt(s)[1],n=r(s,t)):(a=Xt(t)[1],n=r(t,s).map(t=>-1*t))}else if(s<=0&&i<=0){let t=Math.abs(i),r=Math.abs(s);a=Xt(t)[1],n=(n=e?Jt(t,r):Jt(t)).reverse().map(t=>-1*t)}return n}(t,e),i=this.height/((a=s)[a.length-1]-a[0]);var a;const n=Kt(s)*i,r=this.height-function(t){let e,s=Kt(t);e=t.indexOf(0)>=0?t.indexOf(0):t[0]>0?-1*t[0]/s:-1*t[t.length-1]/s+(t.length-1);return e}(s)*n;this.state.yAxis={labels:s,positions:s.map(t=>r-t*i),scaleMultiplier:i,zeroLine:r},this.calcDatasetPoints(),this.calcYExtremes(),this.calcYRegions()}calcDatasetPoints(){let t=this.state,e=e=>e.map(e=>Qt(e,t.yAxis));t.datasets=this.data.datasets.map((t,s)=>{let i=t.values,a=t.cumulativeYs||[];return{name:t.name,index:s,chartType:t.chartType,values:i,yPositions:e(i),cumulativeYs:a,cumulativeYPos:e(a)}})}calcYExtremes(){let t=this.state;this.barOptions.stacked?t.yExtremes=t.datasets[t.datasets.length-1].cumulativeYPos:(t.yExtremes=new Array(t.datasetLength).fill(9999),t.datasets.map(e=>{e.yPositions.map((e,s)=>{e<t.yExtremes[s]&&(t.yExtremes[s]=e)})}))}calcYRegions(){let t=this.state;this.data.yMarkers&&(this.state.yMarkers=this.data.yMarkers.map(e=>(e.position=Qt(e.value,t.yAxis),e.options||(e.options={}),e))),this.data.yRegions&&(this.state.yRegions=this.data.yRegions.map(e=>(e.startPos=Qt(e.start,t.yAxis),e.endPos=Qt(e.end,t.yAxis),e.options||(e.options={}),e)))}getAllYValues(){let t="values";if(this.barOptions.stacked){t="cumulativeYs";let e=new Array(this.state.datasetLength).fill(0);this.data.datasets.map((s,i)=>{let a=this.data.datasets[i].values;s[t]=e=e.map((t,e)=>t+a[e])})}let e=this.data.datasets.map(e=>e[t]);return this.data.yMarkers&&e.push(this.data.yMarkers.map(t=>t.value)),this.data.yRegions&&this.data.yRegions.map(t=>{e.push([t.end,t.start])}),[].concat(...e)}setupComponents(){let t=[["yAxis",{mode:this.config.yAxisMode,width:this.width},function(){return this.state.yAxis}.bind(this)],["xAxis",{mode:this.config.xAxisMode,height:this.height},function(){let t=this.state;return t.xAxis.calcLabels=function(t,e=[],s=!0){let i=t/e.length;i<=0&&(i=1);let a=i/H;return e.map((t,e)=>((t+="").length>a&&(s?e%Math.ceil(t.length/a)!=0&&(t=""):t=a-3>0?t.slice(0,a-3)+" ...":t.slice(0,a)+".."),t))}(this.width,t.xAxis.labels,this.config.xIsSeries),t.xAxis}.bind(this)],["yRegions",{width:this.width,pos:"right"},function(){return this.state.yRegions}.bind(this)]],e=this.state.datasets.filter(t=>"bar"===t.chartType),s=this.state.datasets.filter(t=>"line"===t.chartType),i=e.map(t=>{let s=t.index;return["barGraph-"+t.index,{index:s,color:this.colors[s],stacked:this.barOptions.stacked,valuesOverPoints:this.config.valuesOverPoints,minHeight:this.height*O},function(){let t=this.state,i=t.datasets[s],a=this.barOptions.stacked,n=this.barOptions.spaceRatio||N,r=t.unitWidth*(1-n),o=r/(a?1:e.length),l=t.xAxis.positions.map(t=>t-r/2);a||(l=l.map(t=>t+o*s));let h=new Array(t.datasetLength).fill("");this.config.valuesOverPoints&&(h=a&&i.index===t.datasets.length-1?i.cumulativeYs:i.values);let d=new Array(t.datasetLength).fill(0);return a&&(d=i.yPositions.map((t,e)=>t-i.cumulativeYPos[e])),{xPositions:l,yPositions:i.yPositions,offsets:d,labels:h,zeroLine:t.yAxis.zeroLine,barsWidth:r,barWidth:o}}.bind(this)]}),a=s.map(t=>{let e=t.index;return["lineGraph-"+t.index,{index:e,color:this.colors[e],svgDefs:this.svgDefs,heatline:this.lineOptions.heatline,regionFill:this.lineOptions.regionFill,hideDots:this.lineOptions.hideDots,hideLine:this.lineOptions.hideLine,valuesOverPoints:this.config.valuesOverPoints},function(){let t=this.state,s=t.datasets[e],i=t.yAxis.positions[0]<t.yAxis.zeroLine?t.yAxis.positions[0]:t.yAxis.zeroLine;return{xPositions:t.xAxis.positions,yPositions:s.yPositions,values:s.values,zeroLine:i,radius:this.lineOptions.dotSize||E}}.bind(this)]}),n=[["yMarkers",{width:this.width,pos:"right"},function(){return this.state.yMarkers}.bind(this)]];t=t.concat(i,a,n);let r=["yMarkers","yRegions"];this.dataUnitComponents=[],this.components=new Map(t.filter(t=>!r.includes(t[0])||this.state[t[0]]).map(t=>{let e=qt(...t);return(t[0].includes("lineGraph")||t[0].includes("barGraph"))&&this.dataUnitComponents.push(e),[t[0],e]}))}makeDataByIndex(){this.dataByIndex={};let t=this.state,e=this.config.formatTooltipX,s=this.config.formatTooltipY;t.xAxis.labels.map((i,a)=>{let n=this.state.datasets.map((t,e)=>{let i=t.values[a];return{title:t.name,value:i,yPos:t.yPositions[a],color:this.colors[e],formatted:s?s(i):i}});this.dataByIndex[a]={label:i,formattedLabel:e?e(i):i,xPos:t.xAxis.positions[a],values:n,yExtreme:t.yExtremes[a]}})}bindTooltip(){this.container.addEventListener("mousemove",t=>{let e=this.measures,s=v(this.container),i=t.pageX-s.left-P(e),a=t.pageY-s.top;a<this.height+A(e)&&a>A(e)?this.mapTooltipXPosition(i):this.tip.hideTip()})}mapTooltipXPosition(t){let e=this.state;if(!e.yExtremes)return;let s=function(t,e,s=!1){let i=e.reduce(function(e,s){return Math.abs(s-t)<Math.abs(e-t)?s:e});return s?e.indexOf(i):i}(t,e.xAxis.positions,!0),i=this.dataByIndex[s];this.tip.setValues(i.xPos+this.tip.offset.x,i.yExtreme+this.tip.offset.y,{name:i.formattedLabel,value:""},i.values,s),this.tip.showTip()}renderLegend(){let t=this.data;t.datasets.length>1&&(this.legendArea.textContent="",t.datasets.map((t,e)=>{let s=function(t,e,s,i="none",a){let n={className:"legend-bar",x:0,y:0,width:s,height:"2px",fill:i},r=rt("text",{className:"legend-dataset-text",x:0,y:0,dy:2*st+"px","font-size":1.2*st+"px","text-anchor":"start",fill:at,innerHTML:a}),o=rt("g",{transform:`translate(${t}, ${e})`});return o.appendChild(rt("rect",n)),o.appendChild(r),o}(M*e,"0",M,this.colors[e],t.name);this.legendArea.appendChild(s)}))}makeOverlay(){this.init?this.init=0:(this.overlayGuides&&this.overlayGuides.forEach(t=>{let e=t.overlay;e.parentNode.removeChild(e)}),this.overlayGuides=this.dataUnitComponents.map(t=>({type:t.unitType,overlay:void 0,units:t.units})),void 0===this.state.currentIndex&&(this.state.currentIndex=this.state.datasetLength-1),this.overlayGuides.map(t=>{let e=t.units[this.state.currentIndex];t.overlay=ft[t.type](e),this.drawArea.appendChild(t.overlay)}))}updateOverlayGuides(){this.overlayGuides&&this.overlayGuides.forEach(t=>{let e=t.overlay;e.parentNode.removeChild(e)})}bindOverlay(){this.parent.addEventListener("data-select",()=>{this.updateOverlay()})}bindUnits(){this.dataUnitComponents.map(t=>{t.units.map(t=>{t.addEventListener("click",()=>{let e=t.getAttribute("data-point-index");this.setCurrentDataPoint(e)})})}),this.tip.container.addEventListener("click",()=>{let t=this.tip.container.getAttribute("data-point-index");this.setCurrentDataPoint(t)})}updateOverlay(){this.overlayGuides.map(t=>{let e=t.units[this.state.currentIndex];gt[t.type](e,t.overlay)})}onLeftArrow(){this.setCurrentDataPoint(this.state.currentIndex-1)}onRightArrow(){this.setCurrentDataPoint(this.state.currentIndex+1)}getDataPoint(t=this.state.currentIndex){let e=this.state;return{index:t,label:e.xAxis.labels[t],values:e.datasets.map(e=>e.values[t])}}setCurrentDataPoint(t){let e=this.state;(t=parseInt(t))<0&&(t=0),t>=e.xAxis.labels.length&&(t=e.xAxis.labels.length-1),t!==e.currentIndex&&(e.currentIndex=t,function(t,e,s){var i=document.createEvent("HTMLEvents");for(var a in i.initEvent(e,!0,!0),s)i[a]=s[a];t.dispatchEvent(i)}(this.parent,"data-select",this.getDataPoint()))}addDataPoint(t,e,s=this.state.datasetLength){super.addDataPoint(t,e,s),this.data.labels.splice(s,0,t),this.data.datasets.map((t,i)=>{t.values.splice(s,0,e[i])}),this.update(this.data)}removeDataPoint(t=this.state.datasetLength-1){this.data.labels.length<=1||(super.removeDataPoint(t),this.data.labels.splice(t,1),this.data.datasets.map(e=>{e.values.splice(t,1)}),this.update(this.data))}updateDataset(t,e=0){this.data.datasets[e].values=t,this.update(this.data)}updateDatasets(t){this.data.datasets.map((e,s)=>{t[s]&&(e.values=t[s])}),this.update(this.data)}}const se={bar:ee,line:ee,percentage:class extends Nt{constructor(t,e){super(t,e),this.type="percentage",this.setup()}setMeasures(t){let e=this.measures;this.barOptions=t.barOptions||{};let s=this.barOptions;s.height=s.height||S,s.depth=s.depth||$,e.paddings.right=30,e.legendHeight=80,e.baseHeight=8*(s.height+.5*s.depth)}setupComponents(){let t=this.state,e=[["percentageBars",{barHeight:this.barOptions.height,barDepth:this.barOptions.depth},function(){return{xPositions:t.xPositions,widths:t.widths,colors:this.colors}}.bind(this)]];this.components=new Map(e.map(t=>{let e=qt(...t);return[t[0],e]}))}calc(){super.calc();let t=this.state;t.xPositions=[],t.widths=[];let e=0;t.sliceTotals.map(s=>{let i=this.width*s/t.grandTotal;t.widths.push(i),t.xPositions.push(e),e+=i})}makeDataByIndex(){}bindTooltip(){let t=this.state;this.container.addEventListener("mousemove",e=>{let s=this.components.get("percentageBars").store,i=e.target;if(s.includes(i)){let e=s.indexOf(i),a=v(this.container),n=v(i),r=n.left-a.left+parseInt(i.getAttribute("width"))/2,o=n.top-a.top,l=(this.formattedLabels&&this.formattedLabels.length>0?this.formattedLabels[e]:this.state.labels[e])+": ",h=t.sliceTotals[e]/t.grandTotal;this.tip.setValues(r,o,{name:l,value:(100*h).toFixed(1)+"%"}),this.tip.showTip()}})}},heatmap:class extends Mt{constructor(t,e){super(t,e),this.type="heatmap",this.countLabel=e.countLabel||"";let s=["Sunday","Monday"],i=s.includes(e.startSubDomain)?e.startSubDomain:"Sunday";this.startSubDomainIndex=s.indexOf(i),this.setup()}setMeasures(t){let e=this.measures;this.discreteDomains=0===t.discreteDomains?0:1,e.paddings.top=3*te,e.paddings.bottom=0,e.legendHeight=2*te,e.baseHeight=te*Et+k(e);let s=this.data,i=this.discreteDomains?Ot:0;this.independentWidth=(Rt(s.start,s.end)+i)*Zt+C(e)}updateWidth(){let t=this.discreteDomains?Ot:0,e=this.state.noOfWeeks?this.state.noOfWeeks:52;this.baseWidth=(e+t)*Zt+C(this.measures)}prepareData(t=this.data){if(t.start&&t.end&&t.start>t.end)throw new Error("Start date cannot be greater than end date.");if(t.start||(t.start=new Date,t.start.setFullYear(t.start.getFullYear()-1)),t.end||(t.end=new Date),t.dataPoints=t.dataPoints||{},parseInt(Object.keys(t.dataPoints)[0])>1e5){let e={};Object.keys(t.dataPoints).forEach(s=>{let i=new Date(s*St);e[Ft(i)]=t.dataPoints[s]}),t.dataPoints=e}return t}calc(){let t=this.state;t.start=It(this.data.start),t.end=It(this.data.end),t.firstWeekStart=It(t.start),t.noOfWeeks=Rt(t.start,t.end),t.distribution=function(t,e){let s=Math.max(...t),i=1/(e-1),a=[];for(var n=0;n<e;n++){let t=s*(i*n);a.push(t)}return a}(Object.values(this.data.dataPoints),z),t.domainConfigs=this.getDomains()}setupComponents(){let t=this.state,e=this.discreteDomains?0:1,s=t.domainConfigs.map((s,i)=>["heatDomain",{index:s.index,colWidth:Zt,rowHeight:te,squareSize:W,xTranslate:t.domainConfigs.filter((t,e)=>e<i).map(t=>t.cols.length-e).reduce((t,e)=>t+e,0)*Zt},function(){return t.domainConfigs[i]}.bind(this)]);this.components=new Map(s.map((t,e)=>{let s=qt(...t);return[t[0]+"-"+e,s]}));let i=0;Wt.forEach((t,e)=>{if([1,3,5].includes(e)){let e=pt("subdomain-name",-Zt/2,i,t,{fontSize:W,dy:8,textAnchor:"end"});this.drawArea.appendChild(e)}i+=te})}update(t){t||console.error("No data to update."),this.data=this.prepareData(t),this.draw(),this.bindTooltip()}bindTooltip(){this.container.addEventListener("mousemove",t=>{this.components.forEach(e=>{let s=e.store,i=t.target;if(s.includes(i)){let e=i.getAttribute("data-value"),s=i.getAttribute("data-date").split("-"),a=Yt(parseInt(s[1])-1,!0),n=this.container.getBoundingClientRect(),r=i.getBoundingClientRect(),o=parseInt(t.target.getAttribute("width")),l=r.left-n.left+o/2,h=r.top-n.top,d=e+" "+this.countLabel,c=" on "+a+" "+s[0]+", "+s[2];this.tip.setValues(l,h,{name:c,value:d,valueFirst:1},[]),this.tip.showTip()}})})}renderLegend(){this.legendArea.textContent="";let t=0,e=te,s=pt("subdomain-name",t,e,"Less",{fontSize:W+1,dy:9});t=2*Zt+Zt/2,this.legendArea.appendChild(s),this.colors.slice(0,z).map((s,i)=>{const a=ct("heatmap-legend-unit",t+(Zt+3)*i,e,W,s);this.legendArea.appendChild(a)});let i=pt("subdomain-name",t+z*(Zt+3)+Zt/4,e,"More",{fontSize:W+1,dy:9});this.legendArea.appendChild(i)}getDomains(){let t=this.state;const[e,s]=[t.start.getMonth(),t.start.getFullYear()],[i,a]=[t.end.getMonth(),t.end.getFullYear()],n=i-e+1+12*(a-s);let r=[],o=It(t.start);for(var l=0;l<n;l++){let e=t.end;if(!jt(o,t.end)){let[t,s]=[o.getMonth(),o.getFullYear()];e=_t(t,s)}r.push(this.getDomainConfig(o,e)),Vt(e,1),o=e}return r}getDomainConfig(t,e=""){let[s,i]=[t.getMonth(),t.getFullYear()],a=Bt(t),n={index:s,cols:[]};Vt(e=It(e)||_t(s,i),1);let r,o=Rt(a,e),l=[];for(var h=0;h<o;h++)r=this.getCol(a,s),l.push(r),Vt(a=new Date(r[Et-1].yyyyMmDd),1);return void 0!==r[Et-1].dataValue&&(Vt(a,1),l.push(this.getCol(a,s,!0))),n.cols=l,n}getCol(t,e,s=!1){let i=this.state,a=It(t),n=[];for(var r=0;r<Et;r++,Vt(a,1)){let t={},r=a>=i.start&&a<=i.end;s||a.getMonth()!==e||!r?t.yyyyMmDd=Ft(a):t=this.getSubDomainConfig(a),n.push(t)}return n}getSubDomainConfig(t){let e=Ft(t),s=this.data.dataPoints[e];var i,a;return{yyyyMmDd:e,dataValue:s||0,fill:this.colors[(i=s,a=this.state.distribution,a.filter(t=>t<i).length)]}}},pie:class extends Nt{constructor(t,e){super(t,e),this.type="pie",this.initTimeout=0,this.init=1,this.setup()}configure(t){super.configure(t),this.mouseMove=this.mouseMove.bind(this),this.mouseLeave=this.mouseLeave.bind(this),this.hoverRadio=t.hoverRadio||.1,this.config.startAngle=t.startAngle||0,this.clockWise=t.clockWise||!1}calc(){super.calc();let t=this.state;this.radius=this.height>this.width?this.center.x:this.center.y;const{radius:e,clockWise:s}=this,i=t.slicesProperties||[];t.sliceStrings=[],t.slicesProperties=[];let a=180-this.config.startAngle;t.sliceTotals.map((n,r)=>{const o=a,l=n/t.grandTotal*Y,h=s?-l:l,d=a+=h,c=G(o,e),p=G(d,e),u=this.init&&i[r];let m,f;this.init?(m=u?u.startPosition:c,f=u?u.endPosition:c):(m=c,f=p);const g=function(t,e,s,i,a=1){let[n,r]=[s.x+t.x,s.y+t.y],[o,l]=[s.x+e.x,s.y+e.y];return`M${s.x} ${s.y}\n\t\tL${n} ${r}\n\t\tA ${i} ${i} 0 0 ${a?1:0}\n\t\t${o} ${l} z`}(m,f,this.center,this.radius,this.clockWise);t.sliceStrings.push(g),t.slicesProperties.push({startPosition:c,endPosition:p,value:n,total:t.grandTotal,startAngle:o,endAngle:d,angle:h})}),this.init=0}setupComponents(){let t=this.state,e=[["pieSlices",{},function(){return{sliceStrings:t.sliceStrings,colors:this.colors}}.bind(this)]];this.components=new Map(e.map(t=>{let e=qt(...t);return[t[0],e]}))}calTranslateByAngle(t){const{radius:e,hoverRadio:s}=this,i=G(t.startAngle+t.angle/2,e);return`translate3d(${i.x*s}px,${i.y*s}px,0)`}hoverSlice(t,e,s,i){if(!t)return;const a=this.colors[e];if(s){Ct(t,this.calTranslateByAngle(this.state.slicesProperties[e])),t.style.fill=Q(a,50);let s=v(this.svg),n=i.pageX-s.left+10,r=i.pageY-s.top-10,o=(this.formatted_labels&&this.formatted_labels.length>0?this.formatted_labels[e]:this.state.labels[e])+": ",l=(100*this.state.sliceTotals[e]/this.state.grandTotal).toFixed(1);this.tip.setValues(n,r,{name:o,value:l+"%"}),this.tip.showTip()}else Ct(t,"translate3d(0,0,0)"),this.tip.hideTip(),t.style.fill=a}bindTooltip(){this.container.addEventListener("mousemove",this.mouseMove),this.container.addEventListener("mouseleave",this.mouseLeave)}mouseMove(t){const e=t.target;let s=this.components.get("pieSlices").store,i=this.curActiveSliceIndex,a=this.curActiveSlice;if(s.includes(e)){let n=s.indexOf(e);this.hoverSlice(a,i,!1),this.curActiveSlice=e,this.curActiveSliceIndex=n,this.hoverSlice(e,n,!0,t)}else this.mouseLeave()}mouseLeave(){this.hoverSlice(this.curActiveSlice,this.curActiveSliceIndex,!1)}}};class ie{constructor(t,e){return function(t="line",e,s){return"axis-mixed"===t?(s.type="line",new ee(e,s)):se[t]?new se[t](e,s):void console.error("Undefined chart type: "+t)}(e.type,t,e)}}var ae=function(t){var e,s;function i(){return t.apply(this,arguments)||this}s=t,(e=i).prototype=Object.create(s.prototype),e.prototype.constructor=e,e.__proto__=s;var a=i.prototype;return a.init=function(){t.prototype.init.call(this);var e=new Date;e.setTime(e.getTime()+1e3*app.data.statistics.timezoneOffset),e.setUTCHours(0,0,0,0),e.setTime(e.getTime()-1e3*app.data.statistics.timezoneOffset),e/=1e3,this.entities=["users","discussions","posts"],this.periods={today:{start:e,end:e+86400,step:3600},last_7_days:{start:e-604800,end:e,step:86400},last_28_days:{start:e-2419200,end:e,step:86400},last_12_months:{start:e-31449600,end:e,step:604800}},this.selectedEntity="users",this.selectedPeriod="last_7_days"},a.className=function(){return"StatisticsWidget"},a.content=function(){var t=this,e=this.periods[this.selectedPeriod];return m("div",{className:"StatisticsWidget-table"},m("div",{className:"StatisticsWidget-labels"},m("div",{className:"StatisticsWidget-label"},app.translator.trans("flarum-statistics.admin.statistics.total_label")),m("div",{className:"StatisticsWidget-label"},m(c.a,{buttonClassName:"Button Button--text",caretIcon:"fas fa-caret-down"},Object.keys(this.periods).map(function(e){return m(u.a,{active:e===t.selectedPeriod,onclick:t.changePeriod.bind(t,e),icon:e!==t.selectedPeriod||"fas fa-check"},app.translator.trans("flarum-statistics.admin.statistics."+e+"_label"))})))),this.entities.map(function(s){var i=t.getTotalCount(s),a=t.getPeriodCount(s,e),n=t.getPeriodCount(s,t.getLastPeriod(e)),r=n>0&&(a-n)/n*100;return m("a",{className:"StatisticsWidget-entity"+(t.selectedEntity===s?" active":""),onclick:t.changeEntity.bind(t,s)},m("h3",{className:"StatisticsWidget-heading"},app.translator.trans("flarum-statistics.admin.statistics."+s+"_heading")),m("div",{className:"StatisticsWidget-total",title:i},b()(i)),m("div",{className:"StatisticsWidget-period",title:a},b()(a)," ",r?m("span",{className:"StatisticsWidget-change StatisticsWidget-change--"+(r>0?"up":"down")},g()("fas fa-arrow-"+(r>0?"up":"down")),Math.abs(r.toFixed(1)),"%"):""))}),m("div",{className:"StatisticsWidget-chart",config:this.drawChart.bind(this)}))},a.drawChart=function(t,e,s){if(!s.chart||s.entity!==this.selectedEntity||s.period!==this.selectedPeriod){for(var i=app.data.statistics.timezoneOffset,a=this.periods[this.selectedPeriod],n=a.end-a.start,r=[],o=[],l=[],h=a.start;h<a.end;h+=a.step){var d=void 0;a.step<86400?d=moment.unix(h+i).utc().format("h A"):(d=moment.unix(h+i).utc().format("D MMM"),a.step>86400&&(d+=" - "+moment.unix(h+i+a.step-1).utc().format("D MMM"))),r.push(d),o.push(this.getPeriodCount(this.selectedEntity,{start:h,end:h+a.step})),l.push(this.getPeriodCount(this.selectedEntity,{start:h-n,end:h-n+a.step}))}var c={labels:r,datasets:[{values:l},{values:o}]};s.chart?s.chart.update(c):s.chart=new ie(t,{data:c,type:"line",height:280,axisOptions:{xAxisMode:"tick",yAxisMode:"span",xIsSeries:!0},lineOptions:{hideDots:1},colors:["black",app.forum.attribute("themePrimaryColor")]}),s.entity=this.selectedEntity,s.period=this.selectedPeriod}},a.changeEntity=function(t){this.selectedEntity=t},a.changePeriod=function(t){this.selectedPeriod=t},a.getTotalCount=function(t){return app.data.statistics[t].total},a.getPeriodCount=function(t,e){var s=app.data.statistics[t].timed,i=0;for(var a in s)a>=e.start&&a<e.end&&(i+=s[a]);return i},a.getLastPeriod=function(t){return{start:t.start-(t.end-t.start),end:t.start}},i}(h.a);a.a.initializers.add("flarum-statistics",function(){Object(n.extend)(o.a.prototype,"availableWidgets",function(t){t.push(m(ae,null))})})}]);
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./admin.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./admin.js":
+/*!******************!*\
+  !*** ./admin.js ***!
+  \******************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_admin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/admin */ "./src/admin/index.js");
+/* empty/unused harmony star reexport *//*
+ * This file is part of Flarum.
+ *
+ * (c) Toby Zerner <toby.zerner@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _inheritsLoose; });
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  subClass.__proto__ = superClass;
+}
+
+/***/ }),
+
+/***/ "./node_modules/frappe-charts/dist/frappe-charts.esm.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/frappe-charts/dist/frappe-charts.esm.js ***!
+  \**************************************************************/
+/*! exports provided: Chart, PercentageChart, PieChart, Heatmap, AxisChart */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Chart", function() { return Chart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PercentageChart", function() { return PercentageChart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PieChart", function() { return PieChart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Heatmap", function() { return Heatmap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AxisChart", function() { return AxisChart; });
+function $(expr, con) {
+	return typeof expr === "string"? (con || document).querySelector(expr) : expr || null;
+}
+
+
+
+$.create = (tag, o) => {
+	var element = document.createElement(tag);
+
+	for (var i in o) {
+		var val = o[i];
+
+		if (i === "inside") {
+			$(val).appendChild(element);
+		}
+		else if (i === "around") {
+			var ref = $(val);
+			ref.parentNode.insertBefore(element, ref);
+			element.appendChild(ref);
+
+		} else if (i === "styles") {
+			if(typeof val === "object") {
+				Object.keys(val).map(prop => {
+					element.style[prop] = val[prop];
+				});
+			}
+		} else if (i in element ) {
+			element[i] = val;
+		}
+		else {
+			element.setAttribute(i, val);
+		}
+	}
+
+	return element;
+};
+
+function getOffset(element) {
+	let rect = element.getBoundingClientRect();
+	return {
+		// https://stackoverflow.com/a/7436602/6495043
+		// rect.top varies with scroll, so we add whatever has been
+		// scrolled to it to get absolute distance from actual page top
+		top: rect.top + (document.documentElement.scrollTop || document.body.scrollTop),
+		left: rect.left + (document.documentElement.scrollLeft || document.body.scrollLeft)
+	};
+}
+
+function isElementInViewport(el) {
+	// Although straightforward: https://stackoverflow.com/a/7557433/6495043
+	var rect = el.getBoundingClientRect();
+
+	return (
+		rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+	);
+}
+
+function getElementContentWidth(element) {
+	var styles = window.getComputedStyle(element);
+	var padding = parseFloat(styles.paddingLeft) +
+		parseFloat(styles.paddingRight);
+
+	return element.clientWidth - padding;
+}
+
+
+
+
+
+function fire(target, type, properties) {
+	var evt = document.createEvent("HTMLEvents");
+
+	evt.initEvent(type, true, true );
+
+	for (var j in properties) {
+		evt[j] = properties[j];
+	}
+
+	return target.dispatchEvent(evt);
+}
+
+// https://css-tricks.com/snippets/javascript/loop-queryselectorall-matches/
+
+const BASE_MEASURES = {
+	margins: {
+		top: 10,
+		bottom: 10,
+		left: 20,
+		right: 20
+	},
+	paddings: {
+		top: 20,
+		bottom: 40,
+		left: 30,
+		right: 10
+	},
+
+	baseHeight: 240,
+	titleHeight: 20,
+	legendHeight: 30,
+
+	titleFontSize: 12,
+};
+
+function getTopOffset(m) {
+	return m.titleHeight + m.margins.top + m.paddings.top;
+}
+
+function getLeftOffset(m) {
+	return m.margins.left + m.paddings.left;
+}
+
+function getExtraHeight(m) {
+	let totalExtraHeight = m.margins.top + m.margins.bottom
+		+ m.paddings.top + m.paddings.bottom
+		+ m.titleHeight + m.legendHeight;
+	return totalExtraHeight;
+}
+
+function getExtraWidth(m) {
+	let totalExtraWidth = m.margins.left + m.margins.right
+		+ m.paddings.left + m.paddings.right;
+
+	return totalExtraWidth;
+}
+
+const INIT_CHART_UPDATE_TIMEOUT = 700;
+const CHART_POST_ANIMATE_TIMEOUT = 400;
+
+const DEFAULT_AXIS_CHART_TYPE = 'line';
+const AXIS_DATASET_CHART_TYPES = ['line', 'bar'];
+
+const AXIS_LEGEND_BAR_SIZE = 100;
+
+const BAR_CHART_SPACE_RATIO = 0.5;
+const MIN_BAR_PERCENT_HEIGHT = 0.01;
+
+const LINE_CHART_DOT_SIZE = 4;
+const DOT_OVERLAY_SIZE_INCR = 4;
+
+const PERCENTAGE_BAR_DEFAULT_HEIGHT = 20;
+const PERCENTAGE_BAR_DEFAULT_DEPTH = 2;
+
+// Fixed 5-color theme,
+// More colors are difficult to parse visually
+const HEATMAP_DISTRIBUTION_SIZE = 5;
+
+const HEATMAP_SQUARE_SIZE = 10;
+const HEATMAP_GUTTER_SIZE = 2;
+
+const DEFAULT_CHAR_WIDTH = 7;
+
+const TOOLTIP_POINTER_TRIANGLE_HEIGHT = 5;
+
+const DEFAULT_CHART_COLORS = ['light-blue', 'blue', 'violet', 'red', 'orange',
+	'yellow', 'green', 'light-green', 'purple', 'magenta', 'light-grey', 'dark-grey'];
+const HEATMAP_COLORS_GREEN = ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196127'];
+
+
+
+const DEFAULT_COLORS = {
+	bar: DEFAULT_CHART_COLORS,
+	line: DEFAULT_CHART_COLORS,
+	pie: DEFAULT_CHART_COLORS,
+	percentage: DEFAULT_CHART_COLORS,
+	heatmap: HEATMAP_COLORS_GREEN
+};
+
+// Universal constants
+const ANGLE_RATIO = Math.PI / 180;
+const FULL_ANGLE = 360;
+
+class SvgTip {
+	constructor({
+		parent = null,
+		colors = []
+	}) {
+		this.parent = parent;
+		this.colors = colors;
+		this.titleName = '';
+		this.titleValue = '';
+		this.listValues = [];
+		this.titleValueFirst = 0;
+
+		this.x = 0;
+		this.y = 0;
+
+		this.top = 0;
+		this.left = 0;
+
+		this.setup();
+	}
+
+	setup() {
+		this.makeTooltip();
+	}
+
+	refresh() {
+		this.fill();
+		this.calcPosition();
+	}
+
+	makeTooltip() {
+		this.container = $.create('div', {
+			inside: this.parent,
+			className: 'graph-svg-tip comparison',
+			innerHTML: `<span class="title"></span>
+				<ul class="data-point-list"></ul>
+				<div class="svg-pointer"></div>`
+		});
+		this.hideTip();
+
+		this.title = this.container.querySelector('.title');
+		this.dataPointList = this.container.querySelector('.data-point-list');
+
+		this.parent.addEventListener('mouseleave', () => {
+			this.hideTip();
+		});
+	}
+
+	fill() {
+		let title;
+		if(this.index) {
+			this.container.setAttribute('data-point-index', this.index);
+		}
+		if(this.titleValueFirst) {
+			title = `<strong>${this.titleValue}</strong>${this.titleName}`;
+		} else {
+			title = `${this.titleName}<strong>${this.titleValue}</strong>`;
+		}
+		this.title.innerHTML = title;
+		this.dataPointList.innerHTML = '';
+
+		this.listValues.map((set, i) => {
+			const color = this.colors[i] || 'black';
+			let value = set.formatted === 0 || set.formatted ? set.formatted : set.value;
+
+			let li = $.create('li', {
+				styles: {
+					'border-top': `3px solid ${color}`
+				},
+				innerHTML: `<strong style="display: block;">${ value === 0 || value ? value : '' }</strong>
+					${set.title ? set.title : '' }`
+			});
+
+			this.dataPointList.appendChild(li);
+		});
+	}
+
+	calcPosition() {
+		let width = this.container.offsetWidth;
+
+		this.top = this.y - this.container.offsetHeight
+			- TOOLTIP_POINTER_TRIANGLE_HEIGHT;
+		this.left = this.x - width/2;
+		let maxLeft = this.parent.offsetWidth - width;
+
+		let pointer = this.container.querySelector('.svg-pointer');
+
+		if(this.left < 0) {
+			pointer.style.left = `calc(50% - ${-1 * this.left}px)`;
+			this.left = 0;
+		} else if(this.left > maxLeft) {
+			let delta = this.left - maxLeft;
+			let pointerOffset = `calc(50% + ${delta}px)`;
+			pointer.style.left = pointerOffset;
+
+			this.left = maxLeft;
+		} else {
+			pointer.style.left = `50%`;
+		}
+	}
+
+	setValues(x, y, title = {}, listValues = [], index = -1) {
+		this.titleName = title.name;
+		this.titleValue = title.value;
+		this.listValues = listValues;
+		this.x = x;
+		this.y = y;
+		this.titleValueFirst = title.valueFirst || 0;
+		this.index = index;
+		this.refresh();
+	}
+
+	hideTip() {
+		this.container.style.top = '0px';
+		this.container.style.left = '0px';
+		this.container.style.opacity = '0';
+	}
+
+	showTip() {
+		this.container.style.top = this.top + 'px';
+		this.container.style.left = this.left + 'px';
+		this.container.style.opacity = '1';
+	}
+}
+
+function floatTwo(d) {
+	return parseFloat(d.toFixed(2));
+}
+
+/**
+ * Returns whether or not two given arrays are equal.
+ * @param {Array} arr1 First array
+ * @param {Array} arr2 Second array
+ */
+
+
+/**
+ * Shuffles array in place. ES6 version
+ * @param {Array} array An array containing the items.
+ */
+
+
+/**
+ * Fill an array with extra points
+ * @param {Array} array Array
+ * @param {Number} count number of filler elements
+ * @param {Object} element element to fill with
+ * @param {Boolean} start fill at start?
+ */
+function fillArray(array, count, element, start=false) {
+	if(!element) {
+		element = start ? array[0] : array[array.length - 1];
+	}
+	let fillerArray = new Array(Math.abs(count)).fill(element);
+	array = start ? fillerArray.concat(array) : array.concat(fillerArray);
+	return array;
+}
+
+/**
+ * Returns pixel width of string.
+ * @param {String} string
+ * @param {Number} charWidth Width of single char in pixels
+ */
+function getStringWidth(string, charWidth) {
+	return (string+"").length * charWidth;
+}
+
+
+
+// https://stackoverflow.com/a/29325222
+
+
+function getPositionByAngle(angle, radius) {
+	return {
+		x: Math.sin(angle * ANGLE_RATIO) * radius,
+		y: Math.cos(angle * ANGLE_RATIO) * radius,
+	};
+}
+
+function getBarHeightAndYAttr(yTop, zeroLine) {
+	let height, y;
+	if (yTop <= zeroLine) {
+		height = zeroLine - yTop;
+		y = yTop;
+	} else {
+		height = yTop - zeroLine;
+		y = zeroLine;
+	}
+
+	return [height, y];
+}
+
+function equilizeNoOfElements(array1, array2,
+	extraCount = array2.length - array1.length) {
+
+	// Doesn't work if either has zero elements.
+	if(extraCount > 0) {
+		array1 = fillArray(array1, extraCount);
+	} else {
+		array2 = fillArray(array2, extraCount);
+	}
+	return [array1, array2];
+}
+
+const PRESET_COLOR_MAP = {
+	'light-blue': '#7cd6fd',
+	'blue': '#5e64ff',
+	'violet': '#743ee2',
+	'red': '#ff5858',
+	'orange': '#ffa00a',
+	'yellow': '#feef72',
+	'green': '#28a745',
+	'light-green': '#98d85b',
+	'purple': '#b554ff',
+	'magenta': '#ffa3ef',
+	'black': '#36114C',
+	'grey': '#bdd3e6',
+	'light-grey': '#f0f4f7',
+	'dark-grey': '#b8c2cc'
+};
+
+function limitColor(r){
+	if (r > 255) return 255;
+	else if (r < 0) return 0;
+	return r;
+}
+
+function lightenDarkenColor(color, amt) {
+	let col = getColor(color);
+	let usePound = false;
+	if (col[0] == "#") {
+		col = col.slice(1);
+		usePound = true;
+	}
+	let num = parseInt(col,16);
+	let r = limitColor((num >> 16) + amt);
+	let b = limitColor(((num >> 8) & 0x00FF) + amt);
+	let g = limitColor((num & 0x0000FF) + amt);
+	return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+}
+
+function isValidColor(string) {
+	// https://stackoverflow.com/a/8027444/6495043
+	return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(string);
+}
+
+const getColor = (color) => {
+	return PRESET_COLOR_MAP[color] || color;
+};
+
+const AXIS_TICK_LENGTH = 6;
+const LABEL_MARGIN = 4;
+const FONT_SIZE = 10;
+const BASE_LINE_COLOR = '#dadada';
+const FONT_FILL = '#555b51';
+
+function $$1(expr, con) {
+	return typeof expr === "string"? (con || document).querySelector(expr) : expr || null;
+}
+
+function createSVG(tag, o) {
+	var element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+
+	for (var i in o) {
+		var val = o[i];
+
+		if (i === "inside") {
+			$$1(val).appendChild(element);
+		}
+		else if (i === "around") {
+			var ref = $$1(val);
+			ref.parentNode.insertBefore(element, ref);
+			element.appendChild(ref);
+
+		} else if (i === "styles") {
+			if(typeof val === "object") {
+				Object.keys(val).map(prop => {
+					element.style[prop] = val[prop];
+				});
+			}
+		} else {
+			if(i === "className") { i = "class"; }
+			if(i === "innerHTML") {
+				element['textContent'] = val;
+			} else {
+				element.setAttribute(i, val);
+			}
+		}
+	}
+
+	return element;
+}
+
+function renderVerticalGradient(svgDefElem, gradientId) {
+	return createSVG('linearGradient', {
+		inside: svgDefElem,
+		id: gradientId,
+		x1: 0,
+		x2: 0,
+		y1: 0,
+		y2: 1
+	});
+}
+
+function setGradientStop(gradElem, offset, color, opacity) {
+	return createSVG('stop', {
+		'inside': gradElem,
+		'style': `stop-color: ${color}`,
+		'offset': offset,
+		'stop-opacity': opacity
+	});
+}
+
+function makeSVGContainer(parent, className, width, height) {
+	return createSVG('svg', {
+		className: className,
+		inside: parent,
+		width: width,
+		height: height
+	});
+}
+
+function makeSVGDefs(svgContainer) {
+	return createSVG('defs', {
+		inside: svgContainer,
+	});
+}
+
+function makeSVGGroup(className, transform='', parent=undefined) {
+	let args = {
+		className: className,
+		transform: transform
+	};
+	if(parent) args.inside = parent;
+	return createSVG('g', args);
+}
+
+
+
+function makePath(pathStr, className='', stroke='none', fill='none') {
+	return createSVG('path', {
+		className: className,
+		d: pathStr,
+		styles: {
+			stroke: stroke,
+			fill: fill
+		}
+	});
+}
+
+function makeArcPathStr(startPosition, endPosition, center, radius, clockWise=1){
+	let [arcStartX, arcStartY] = [center.x + startPosition.x, center.y + startPosition.y];
+	let [arcEndX, arcEndY] = [center.x + endPosition.x, center.y + endPosition.y];
+
+	return `M${center.x} ${center.y}
+		L${arcStartX} ${arcStartY}
+		A ${radius} ${radius} 0 0 ${clockWise ? 1 : 0}
+		${arcEndX} ${arcEndY} z`;
+}
+
+function makeGradient(svgDefElem, color, lighter = false) {
+	let gradientId ='path-fill-gradient' + '-' + color + '-' +(lighter ? 'lighter' : 'default');
+	let gradientDef = renderVerticalGradient(svgDefElem, gradientId);
+	let opacities = [1, 0.6, 0.2];
+	if(lighter) {
+		opacities = [0.4, 0.2, 0];
+	}
+
+	setGradientStop(gradientDef, "0%", color, opacities[0]);
+	setGradientStop(gradientDef, "50%", color, opacities[1]);
+	setGradientStop(gradientDef, "100%", color, opacities[2]);
+
+	return gradientId;
+}
+
+function percentageBar(x, y, width, height,
+	depth=PERCENTAGE_BAR_DEFAULT_DEPTH, fill='none') {
+
+	let args = {
+		className: 'percentage-bar',
+		x: x,
+		y: y,
+		width: width,
+		height: height,
+		fill: fill,
+		styles: {
+			'stroke': lightenDarkenColor(fill, -25),
+			// Diabolically good: https://stackoverflow.com/a/9000859
+			// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
+			'stroke-dasharray': `0, ${height + width}, ${width}, ${height}`,
+			'stroke-width': depth
+		},
+	};
+
+	return createSVG("rect", args);
+}
+
+function heatSquare(className, x, y, size, fill='none', data={}) {
+	let args = {
+		className: className,
+		x: x,
+		y: y,
+		width: size,
+		height: size,
+		fill: fill
+	};
+
+	Object.keys(data).map(key => {
+		args[key] = data[key];
+	});
+
+	return createSVG("rect", args);
+}
+
+function legendBar(x, y, size, fill='none', label) {
+	let args = {
+		className: 'legend-bar',
+		x: 0,
+		y: 0,
+		width: size,
+		height: '2px',
+		fill: fill
+	};
+	let text = createSVG('text', {
+		className: 'legend-dataset-text',
+		x: 0,
+		y: 0,
+		dy: (FONT_SIZE * 2) + 'px',
+		'font-size': (FONT_SIZE * 1.2) + 'px',
+		'text-anchor': 'start',
+		fill: FONT_FILL,
+		innerHTML: label
+	});
+
+	let group = createSVG('g', {
+		transform: `translate(${x}, ${y})`
+	});
+	group.appendChild(createSVG("rect", args));
+	group.appendChild(text);
+
+	return group;
+}
+
+function legendDot(x, y, size, fill='none', label) {
+	let args = {
+		className: 'legend-dot',
+		cx: 0,
+		cy: 0,
+		r: size,
+		fill: fill
+	};
+	let text = createSVG('text', {
+		className: 'legend-dataset-text',
+		x: 0,
+		y: 0,
+		dx: (FONT_SIZE) + 'px',
+		dy: (FONT_SIZE/3) + 'px',
+		'font-size': (FONT_SIZE * 1.2) + 'px',
+		'text-anchor': 'start',
+		fill: FONT_FILL,
+		innerHTML: label
+	});
+
+	let group = createSVG('g', {
+		transform: `translate(${x}, ${y})`
+	});
+	group.appendChild(createSVG("circle", args));
+	group.appendChild(text);
+
+	return group;
+}
+
+function makeText(className, x, y, content, options = {}) {
+	let fontSize = options.fontSize || FONT_SIZE;
+	let dy = options.dy !== undefined ? options.dy : (fontSize / 2);
+	let fill = options.fill || FONT_FILL;
+	let textAnchor = options.textAnchor || 'start';
+	return createSVG('text', {
+		className: className,
+		x: x,
+		y: y,
+		dy: dy + 'px',
+		'font-size': fontSize + 'px',
+		fill: fill,
+		'text-anchor': textAnchor,
+		innerHTML: content
+	});
+}
+
+function makeVertLine(x, label, y1, y2, options={}) {
+	if(!options.stroke) options.stroke = BASE_LINE_COLOR;
+	let l = createSVG('line', {
+		className: 'line-vertical ' + options.className,
+		x1: 0,
+		x2: 0,
+		y1: y1,
+		y2: y2,
+		styles: {
+			stroke: options.stroke
+		}
+	});
+
+	let text = createSVG('text', {
+		x: 0,
+		y: y1 > y2 ? y1 + LABEL_MARGIN : y1 - LABEL_MARGIN - FONT_SIZE,
+		dy: FONT_SIZE + 'px',
+		'font-size': FONT_SIZE + 'px',
+		'text-anchor': 'middle',
+		innerHTML: label + ""
+	});
+
+	let line = createSVG('g', {
+		transform: `translate(${ x }, 0)`
+	});
+
+	line.appendChild(l);
+	line.appendChild(text);
+
+	return line;
+}
+
+function makeHoriLine(y, label, x1, x2, options={}) {
+	if(!options.stroke) options.stroke = BASE_LINE_COLOR;
+	if(!options.lineType) options.lineType = '';
+	let className = 'line-horizontal ' + options.className +
+		(options.lineType === "dashed" ? "dashed": "");
+
+	let l = createSVG('line', {
+		className: className,
+		x1: x1,
+		x2: x2,
+		y1: 0,
+		y2: 0,
+		styles: {
+			stroke: options.stroke
+		}
+	});
+
+	let text = createSVG('text', {
+		x: x1 < x2 ? x1 - LABEL_MARGIN : x1 + LABEL_MARGIN,
+		y: 0,
+		dy: (FONT_SIZE / 2 - 2) + 'px',
+		'font-size': FONT_SIZE + 'px',
+		'text-anchor': x1 < x2 ? 'end' : 'start',
+		innerHTML: label+""
+	});
+
+	let line = createSVG('g', {
+		transform: `translate(0, ${y})`,
+		'stroke-opacity': 1
+	});
+
+	if(text === 0 || text === '0') {
+		line.style.stroke = "rgba(27, 31, 35, 0.6)";
+	}
+
+	line.appendChild(l);
+	line.appendChild(text);
+
+	return line;
+}
+
+function yLine(y, label, width, options={}) {
+	if(!options.pos) options.pos = 'left';
+	if(!options.offset) options.offset = 0;
+	if(!options.mode) options.mode = 'span';
+	if(!options.stroke) options.stroke = BASE_LINE_COLOR;
+	if(!options.className) options.className = '';
+
+	let x1 = -1 * AXIS_TICK_LENGTH;
+	let x2 = options.mode === 'span' ? width + AXIS_TICK_LENGTH : 0;
+
+	if(options.mode === 'tick' && options.pos === 'right') {
+		x1 = width + AXIS_TICK_LENGTH;
+		x2 = width;
+	}
+
+	// let offset = options.pos === 'left' ? -1 * options.offset : options.offset;
+
+	x1 += options.offset;
+	x2 += options.offset;
+
+	return makeHoriLine(y, label, x1, x2, {
+		stroke: options.stroke,
+		className: options.className,
+		lineType: options.lineType
+	});
+}
+
+function xLine(x, label, height, options={}) {
+	if(!options.pos) options.pos = 'bottom';
+	if(!options.offset) options.offset = 0;
+	if(!options.mode) options.mode = 'span';
+	if(!options.stroke) options.stroke = BASE_LINE_COLOR;
+	if(!options.className) options.className = '';
+
+	// Draw X axis line in span/tick mode with optional label
+	//                        	y2(span)
+	// 						|
+	// 						|
+	//				x line	|
+	//						|
+	// 					   	|
+	// ---------------------+-- y2(tick)
+	//						|
+	//							y1
+
+	let y1 = height + AXIS_TICK_LENGTH;
+	let y2 = options.mode === 'span' ? -1 * AXIS_TICK_LENGTH : height;
+
+	if(options.mode === 'tick' && options.pos === 'top') {
+		// top axis ticks
+		y1 = -1 * AXIS_TICK_LENGTH;
+		y2 = 0;
+	}
+
+	return makeVertLine(x, label, y1, y2, {
+		stroke: options.stroke,
+		className: options.className,
+		lineType: options.lineType
+	});
+}
+
+function yMarker(y, label, width, options={}) {
+	if(!options.labelPos) options.labelPos = 'right';
+	let x = options.labelPos === 'left' ? LABEL_MARGIN
+		: width - getStringWidth(label, 5) - LABEL_MARGIN;
+
+	let labelSvg = createSVG('text', {
+		className: 'chart-label',
+		x: x,
+		y: 0,
+		dy: (FONT_SIZE / -2) + 'px',
+		'font-size': FONT_SIZE + 'px',
+		'text-anchor': 'start',
+		innerHTML: label+""
+	});
+
+	let line = makeHoriLine(y, '', 0, width, {
+		stroke: options.stroke || BASE_LINE_COLOR,
+		className: options.className || '',
+		lineType: options.lineType
+	});
+
+	line.appendChild(labelSvg);
+
+	return line;
+}
+
+function yRegion(y1, y2, width, label, options={}) {
+	// return a group
+	let height = y1 - y2;
+
+	let rect = createSVG('rect', {
+		className: `bar mini`, // remove class
+		styles: {
+			fill: `rgba(228, 234, 239, 0.49)`,
+			stroke: BASE_LINE_COLOR,
+			'stroke-dasharray': `${width}, ${height}`
+		},
+		// 'data-point-index': index,
+		x: 0,
+		y: 0,
+		width: width,
+		height: height
+	});
+
+	if(!options.labelPos) options.labelPos = 'right';
+	let x = options.labelPos === 'left' ? LABEL_MARGIN
+		: width - getStringWidth(label+"", 4.5) - LABEL_MARGIN;
+
+	let labelSvg = createSVG('text', {
+		className: 'chart-label',
+		x: x,
+		y: 0,
+		dy: (FONT_SIZE / -2) + 'px',
+		'font-size': FONT_SIZE + 'px',
+		'text-anchor': 'start',
+		innerHTML: label+""
+	});
+
+	let region = createSVG('g', {
+		transform: `translate(0, ${y2})`
+	});
+
+	region.appendChild(rect);
+	region.appendChild(labelSvg);
+
+	return region;
+}
+
+function datasetBar(x, yTop, width, color, label='', index=0, offset=0, meta={}) {
+	let [height, y] = getBarHeightAndYAttr(yTop, meta.zeroLine);
+	y -= offset;
+
+	if(height === 0) {
+		height = meta.minHeight;
+		y -= meta.minHeight;
+	}
+
+	let rect = createSVG('rect', {
+		className: `bar mini`,
+		style: `fill: ${color}`,
+		'data-point-index': index,
+		x: x,
+		y: y,
+		width: width,
+		height: height
+	});
+
+	label += "";
+
+	if(!label && !label.length) {
+		return rect;
+	} else {
+		rect.setAttribute('y', 0);
+		rect.setAttribute('x', 0);
+		let text = createSVG('text', {
+			className: 'data-point-value',
+			x: width/2,
+			y: 0,
+			dy: (FONT_SIZE / 2 * -1) + 'px',
+			'font-size': FONT_SIZE + 'px',
+			'text-anchor': 'middle',
+			innerHTML: label
+		});
+
+		let group = createSVG('g', {
+			'data-point-index': index,
+			transform: `translate(${x}, ${y})`
+		});
+		group.appendChild(rect);
+		group.appendChild(text);
+
+		return group;
+	}
+}
+
+function datasetDot(x, y, radius, color, label='', index=0) {
+	let dot = createSVG('circle', {
+		style: `fill: ${color}`,
+		'data-point-index': index,
+		cx: x,
+		cy: y,
+		r: radius
+	});
+
+	label += "";
+
+	if(!label && !label.length) {
+		return dot;
+	} else {
+		dot.setAttribute('cy', 0);
+		dot.setAttribute('cx', 0);
+
+		let text = createSVG('text', {
+			className: 'data-point-value',
+			x: 0,
+			y: 0,
+			dy: (FONT_SIZE / 2 * -1 - radius) + 'px',
+			'font-size': FONT_SIZE + 'px',
+			'text-anchor': 'middle',
+			innerHTML: label
+		});
+
+		let group = createSVG('g', {
+			'data-point-index': index,
+			transform: `translate(${x}, ${y})`
+		});
+		group.appendChild(dot);
+		group.appendChild(text);
+
+		return group;
+	}
+}
+
+function getPaths(xList, yList, color, options={}, meta={}) {
+	let pointsList = yList.map((y, i) => (xList[i] + ',' + y));
+	let pointsStr = pointsList.join("L");
+	let path = makePath("M"+pointsStr, 'line-graph-path', color);
+
+	// HeatLine
+	if(options.heatline) {
+		let gradient_id = makeGradient(meta.svgDefs, color);
+		path.style.stroke = `url(#${gradient_id})`;
+	}
+
+	let paths = {
+		path: path
+	};
+
+	// Region
+	if(options.regionFill) {
+		let gradient_id_region = makeGradient(meta.svgDefs, color, true);
+
+		let pathStr = "M" + `${xList[0]},${meta.zeroLine}L` + pointsStr + `L${xList.slice(-1)[0]},${meta.zeroLine}`;
+		paths.region = makePath(pathStr, `region-fill`, 'none', `url(#${gradient_id_region})`);
+	}
+
+	return paths;
+}
+
+let makeOverlay = {
+	'bar': (unit) => {
+		let transformValue;
+		if(unit.nodeName !== 'rect') {
+			transformValue = unit.getAttribute('transform');
+			unit = unit.childNodes[0];
+		}
+		let overlay = unit.cloneNode();
+		overlay.style.fill = '#000000';
+		overlay.style.opacity = '0.4';
+
+		if(transformValue) {
+			overlay.setAttribute('transform', transformValue);
+		}
+		return overlay;
+	},
+
+	'dot': (unit) => {
+		let transformValue;
+		if(unit.nodeName !== 'circle') {
+			transformValue = unit.getAttribute('transform');
+			unit = unit.childNodes[0];
+		}
+		let overlay = unit.cloneNode();
+		let radius = unit.getAttribute('r');
+		let fill = unit.getAttribute('fill');
+		overlay.setAttribute('r', parseInt(radius) + DOT_OVERLAY_SIZE_INCR);
+		overlay.setAttribute('fill', fill);
+		overlay.style.opacity = '0.6';
+
+		if(transformValue) {
+			overlay.setAttribute('transform', transformValue);
+		}
+		return overlay;
+	},
+
+	'heat_square': (unit) => {
+		let transformValue;
+		if(unit.nodeName !== 'circle') {
+			transformValue = unit.getAttribute('transform');
+			unit = unit.childNodes[0];
+		}
+		let overlay = unit.cloneNode();
+		let radius = unit.getAttribute('r');
+		let fill = unit.getAttribute('fill');
+		overlay.setAttribute('r', parseInt(radius) + DOT_OVERLAY_SIZE_INCR);
+		overlay.setAttribute('fill', fill);
+		overlay.style.opacity = '0.6';
+
+		if(transformValue) {
+			overlay.setAttribute('transform', transformValue);
+		}
+		return overlay;
+	}
+};
+
+let updateOverlay = {
+	'bar': (unit, overlay) => {
+		let transformValue;
+		if(unit.nodeName !== 'rect') {
+			transformValue = unit.getAttribute('transform');
+			unit = unit.childNodes[0];
+		}
+		let attributes = ['x', 'y', 'width', 'height'];
+		Object.values(unit.attributes)
+			.filter(attr => attributes.includes(attr.name) && attr.specified)
+			.map(attr => {
+				overlay.setAttribute(attr.name, attr.nodeValue);
+			});
+
+		if(transformValue) {
+			overlay.setAttribute('transform', transformValue);
+		}
+	},
+
+	'dot': (unit, overlay) => {
+		let transformValue;
+		if(unit.nodeName !== 'circle') {
+			transformValue = unit.getAttribute('transform');
+			unit = unit.childNodes[0];
+		}
+		let attributes = ['cx', 'cy'];
+		Object.values(unit.attributes)
+			.filter(attr => attributes.includes(attr.name) && attr.specified)
+			.map(attr => {
+				overlay.setAttribute(attr.name, attr.nodeValue);
+			});
+
+		if(transformValue) {
+			overlay.setAttribute('transform', transformValue);
+		}
+	},
+
+	'heat_square': (unit, overlay) => {
+		let transformValue;
+		if(unit.nodeName !== 'circle') {
+			transformValue = unit.getAttribute('transform');
+			unit = unit.childNodes[0];
+		}
+		let attributes = ['cx', 'cy'];
+		Object.values(unit.attributes)
+			.filter(attr => attributes.includes(attr.name) && attr.specified)
+			.map(attr => {
+				overlay.setAttribute(attr.name, attr.nodeValue);
+			});
+
+		if(transformValue) {
+			overlay.setAttribute('transform', transformValue);
+		}
+	},
+};
+
+const UNIT_ANIM_DUR = 350;
+const PATH_ANIM_DUR = 350;
+const MARKER_LINE_ANIM_DUR = UNIT_ANIM_DUR;
+const REPLACE_ALL_NEW_DUR = 250;
+
+const STD_EASING = 'easein';
+
+function translate(unit, oldCoord, newCoord, duration) {
+	let old = typeof oldCoord === 'string' ? oldCoord : oldCoord.join(', ');
+	return [
+		unit,
+		{transform: newCoord.join(', ')},
+		duration,
+		STD_EASING,
+		"translate",
+		{transform: old}
+	];
+}
+
+function translateVertLine(xLine, newX, oldX) {
+	return translate(xLine, [oldX, 0], [newX, 0], MARKER_LINE_ANIM_DUR);
+}
+
+function translateHoriLine(yLine, newY, oldY) {
+	return translate(yLine, [0, oldY], [0, newY], MARKER_LINE_ANIM_DUR);
+}
+
+function animateRegion(rectGroup, newY1, newY2, oldY2) {
+	let newHeight = newY1 - newY2;
+	let rect = rectGroup.childNodes[0];
+	let width = rect.getAttribute("width");
+	let rectAnim = [
+		rect,
+		{ height: newHeight, 'stroke-dasharray': `${width}, ${newHeight}` },
+		MARKER_LINE_ANIM_DUR,
+		STD_EASING
+	];
+
+	let groupAnim = translate(rectGroup, [0, oldY2], [0, newY2], MARKER_LINE_ANIM_DUR);
+	return [rectAnim, groupAnim];
+}
+
+function animateBar(bar, x, yTop, width, offset=0, meta={}) {
+	let [height, y] = getBarHeightAndYAttr(yTop, meta.zeroLine);
+	y -= offset;
+	if(bar.nodeName !== 'rect') {
+		let rect = bar.childNodes[0];
+		let rectAnim = [
+			rect,
+			{width: width, height: height},
+			UNIT_ANIM_DUR,
+			STD_EASING
+		];
+
+		let oldCoordStr = bar.getAttribute("transform").split("(")[1].slice(0, -1);
+		let groupAnim = translate(bar, oldCoordStr, [x, y], MARKER_LINE_ANIM_DUR);
+		return [rectAnim, groupAnim];
+	} else {
+		return [[bar, {width: width, height: height, x: x, y: y}, UNIT_ANIM_DUR, STD_EASING]];
+	}
+	// bar.animate({height: args.newHeight, y: yTop}, UNIT_ANIM_DUR, mina.easein);
+}
+
+function animateDot(dot, x, y) {
+	if(dot.nodeName !== 'circle') {
+		let oldCoordStr = dot.getAttribute("transform").split("(")[1].slice(0, -1);
+		let groupAnim = translate(dot, oldCoordStr, [x, y], MARKER_LINE_ANIM_DUR);
+		return [groupAnim];
+	} else {
+		return [[dot, {cx: x, cy: y}, UNIT_ANIM_DUR, STD_EASING]];
+	}
+	// dot.animate({cy: yTop}, UNIT_ANIM_DUR, mina.easein);
+}
+
+function animatePath(paths, newXList, newYList, zeroLine) {
+	let pathComponents = [];
+
+	let pointsStr = newYList.map((y, i) => (newXList[i] + ',' + y));
+	let pathStr = pointsStr.join("L");
+
+	const animPath = [paths.path, {d:"M"+pathStr}, PATH_ANIM_DUR, STD_EASING];
+	pathComponents.push(animPath);
+
+	if(paths.region) {
+		let regStartPt = `${newXList[0]},${zeroLine}L`;
+		let regEndPt = `L${newXList.slice(-1)[0]}, ${zeroLine}`;
+
+		const animRegion = [
+			paths.region,
+			{d:"M" + regStartPt + pathStr + regEndPt},
+			PATH_ANIM_DUR,
+			STD_EASING
+		];
+		pathComponents.push(animRegion);
+	}
+
+	return pathComponents;
+}
+
+function animatePathStr(oldPath, pathStr) {
+	return [oldPath, {d: pathStr}, UNIT_ANIM_DUR, STD_EASING];
+}
+
+// Leveraging SMIL Animations
+
+const EASING = {
+	ease: "0.25 0.1 0.25 1",
+	linear: "0 0 1 1",
+	// easein: "0.42 0 1 1",
+	easein: "0.1 0.8 0.2 1",
+	easeout: "0 0 0.58 1",
+	easeinout: "0.42 0 0.58 1"
+};
+
+function animateSVGElement(element, props, dur, easingType="linear", type=undefined, oldValues={}) {
+
+	let animElement = element.cloneNode(true);
+	let newElement = element.cloneNode(true);
+
+	for(var attributeName in props) {
+		let animateElement;
+		if(attributeName === 'transform') {
+			animateElement = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+		} else {
+			animateElement = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+		}
+		let currentValue = oldValues[attributeName] || element.getAttribute(attributeName);
+		let value = props[attributeName];
+
+		let animAttr = {
+			attributeName: attributeName,
+			from: currentValue,
+			to: value,
+			begin: "0s",
+			dur: dur/1000 + "s",
+			values: currentValue + ";" + value,
+			keySplines: EASING[easingType],
+			keyTimes: "0;1",
+			calcMode: "spline",
+			fill: 'freeze'
+		};
+
+		if(type) {
+			animAttr["type"] = type;
+		}
+
+		for (var i in animAttr) {
+			animateElement.setAttribute(i, animAttr[i]);
+		}
+
+		animElement.appendChild(animateElement);
+
+		if(type) {
+			newElement.setAttribute(attributeName, `translate(${value})`);
+		} else {
+			newElement.setAttribute(attributeName, value);
+		}
+	}
+
+	return [animElement, newElement];
+}
+
+function transform(element, style) { // eslint-disable-line no-unused-vars
+	element.style.transform = style;
+	element.style.webkitTransform = style;
+	element.style.msTransform = style;
+	element.style.mozTransform = style;
+	element.style.oTransform = style;
+}
+
+function animateSVG(svgContainer, elements) {
+	let newElements = [];
+	let animElements = [];
+
+	elements.map(element => {
+		let unit = element[0];
+		let parent = unit.parentNode;
+
+		let animElement, newElement;
+
+		element[0] = unit;
+		[animElement, newElement] = animateSVGElement(...element);
+
+		newElements.push(newElement);
+		animElements.push([animElement, parent]);
+
+		parent.replaceChild(animElement, unit);
+	});
+
+	let animSvg = svgContainer.cloneNode(true);
+
+	animElements.map((animElement, i) => {
+		animElement[1].replaceChild(newElements[i], animElement[0]);
+		elements[i][0] = newElements[i];
+	});
+
+	return animSvg;
+}
+
+function runSMILAnimation(parent, svgElement, elementsToAnimate) {
+	if(elementsToAnimate.length === 0) return;
+
+	let animSvgElement = animateSVG(svgElement, elementsToAnimate);
+	if(svgElement.parentNode == parent) {
+		parent.removeChild(svgElement);
+		parent.appendChild(animSvgElement);
+
+	}
+
+	// Replace the new svgElement (data has already been replaced)
+	setTimeout(() => {
+		if(animSvgElement.parentNode == parent) {
+			parent.removeChild(animSvgElement);
+			parent.appendChild(svgElement);
+		}
+	}, REPLACE_ALL_NEW_DUR);
+}
+
+const CSSTEXT = ".chart-container{position:relative;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif}.chart-container .axis,.chart-container .chart-label{fill:#555b51}.chart-container .axis line,.chart-container .chart-label line{stroke:#dadada}.chart-container .dataset-units circle{stroke:#fff;stroke-width:2}.chart-container .dataset-units path{fill:none;stroke-opacity:1;stroke-width:2px}.chart-container .dataset-path{stroke-width:2px}.chart-container .path-group path{fill:none;stroke-opacity:1;stroke-width:2px}.chart-container line.dashed{stroke-dasharray:5,3}.chart-container .axis-line .specific-value{text-anchor:start}.chart-container .axis-line .y-line{text-anchor:end}.chart-container .axis-line .x-line{text-anchor:middle}.chart-container .legend-dataset-text{fill:#6c7680;font-weight:600}.graph-svg-tip{position:absolute;z-index:99999;padding:10px;font-size:12px;color:#959da5;text-align:center;background:rgba(0,0,0,.8);border-radius:3px}.graph-svg-tip ul{padding-left:0;display:flex}.graph-svg-tip ol{padding-left:0;display:flex}.graph-svg-tip ul.data-point-list li{min-width:90px;flex:1;font-weight:600}.graph-svg-tip strong{color:#dfe2e5;font-weight:600}.graph-svg-tip .svg-pointer{position:absolute;height:5px;margin:0 0 0 -5px;content:' ';border:5px solid transparent;border-top-color:rgba(0,0,0,.8)}.graph-svg-tip.comparison{padding:0;text-align:left;pointer-events:none}.graph-svg-tip.comparison .title{display:block;padding:10px;margin:0;font-weight:600;line-height:1;pointer-events:none}.graph-svg-tip.comparison ul{margin:0;white-space:nowrap;list-style:none}.graph-svg-tip.comparison li{display:inline-block;padding:5px 10px}";
+
+function downloadFile(filename, data) {
+	var a = document.createElement('a');
+	a.style = "display: none";
+	var blob = new Blob(data, {type: "image/svg+xml; charset=utf-8"});
+	var url = window.URL.createObjectURL(blob);
+	a.href = url;
+	a.download = filename;
+	document.body.appendChild(a);
+	a.click();
+	setTimeout(function(){
+		document.body.removeChild(a);
+		window.URL.revokeObjectURL(url);
+	}, 300);
+}
+
+function prepareForExport(svg) {
+	let clone = svg.cloneNode(true);
+	clone.classList.add('chart-container');
+	clone.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+	clone.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+	let styleEl = $.create('style', {
+		'innerHTML': CSSTEXT
+	});
+	clone.insertBefore(styleEl, clone.firstChild);
+
+	let container = $.create('div');
+	container.appendChild(clone);
+
+	return container.innerHTML;
+}
+
+let BOUND_DRAW_FN;
+
+class BaseChart {
+	constructor(parent, options) {
+
+		this.parent = typeof parent === 'string'
+			? document.querySelector(parent)
+			: parent;
+
+		if (!(this.parent instanceof HTMLElement)) {
+			throw new Error('No `parent` element to render on was provided.');
+		}
+
+		this.rawChartArgs = options;
+
+		this.title = options.title || '';
+		this.type = options.type || '';
+
+		this.realData = this.prepareData(options.data);
+		this.data = this.prepareFirstData(this.realData);
+
+		this.colors = this.validateColors(options.colors, this.type);
+
+		this.config = {
+			showTooltip: 1, // calculate
+			showLegend: 1, // calculate
+			isNavigable: options.isNavigable || 0,
+			animate: 1
+		};
+
+		this.measures = JSON.parse(JSON.stringify(BASE_MEASURES));
+		let m = this.measures;
+		this.setMeasures(options);
+		if(!this.title.length) { m.titleHeight = 0; }
+		if(!this.config.showLegend) m.legendHeight = 0;
+		this.argHeight = options.height || m.baseHeight;
+
+		this.state = {};
+		this.options = {};
+
+		this.initTimeout = INIT_CHART_UPDATE_TIMEOUT;
+
+		if(this.config.isNavigable) {
+			this.overlays = [];
+		}
+
+		this.configure(options);
+	}
+
+	prepareData(data) {
+		return data;
+	}
+
+	prepareFirstData(data) {
+		return data;
+	}
+
+	validateColors(colors, type) {
+		const validColors = [];
+		colors = (colors || []).concat(DEFAULT_COLORS[type]);
+		colors.forEach((string) => {
+			const color = getColor(string);
+			if(!isValidColor(color)) {
+				console.warn('"' + string + '" is not a valid color.');
+			} else {
+				validColors.push(color);
+			}
+		});
+		return validColors;
+	}
+
+	setMeasures() {
+		// Override measures, including those for title and legend
+		// set config for legend and title
+	}
+
+	configure() {
+		let height = this.argHeight;
+		this.baseHeight = height;
+		this.height = height - getExtraHeight(this.measures);
+
+		// Bind window events
+		BOUND_DRAW_FN = this.boundDrawFn.bind(this);
+		window.addEventListener('resize', BOUND_DRAW_FN);
+		window.addEventListener('orientationchange', this.boundDrawFn.bind(this));
+	}
+
+	boundDrawFn() {
+		this.draw(true);
+	}
+
+	unbindWindowEvents() {
+		window.removeEventListener('resize', BOUND_DRAW_FN);
+		window.removeEventListener('orientationchange', this.boundDrawFn.bind(this));
+	}
+
+	// Has to be called manually
+	setup() {
+		this.makeContainer();
+		this.updateWidth();
+		this.makeTooltip();
+
+		this.draw(false, true);
+	}
+
+	makeContainer() {
+		// Chart needs a dedicated parent element
+		this.parent.innerHTML = '';
+
+		let args = {
+			inside: this.parent,
+			className: 'chart-container'
+		};
+
+		if(this.independentWidth) {
+			args.styles = { width: this.independentWidth + 'px' };
+		}
+
+		this.container = $.create('div', args);
+	}
+
+	makeTooltip() {
+		this.tip = new SvgTip({
+			parent: this.container,
+			colors: this.colors
+		});
+		this.bindTooltip();
+	}
+
+	bindTooltip() {}
+
+	draw(onlyWidthChange=false, init=false) {
+		this.updateWidth();
+
+		this.calc(onlyWidthChange);
+		this.makeChartArea();
+		this.setupComponents();
+
+		this.components.forEach(c => c.setup(this.drawArea));
+		// this.components.forEach(c => c.make());
+		this.render(this.components, false);
+
+		if(init) {
+			this.data = this.realData;
+			setTimeout(() => {this.update(this.data);}, this.initTimeout);
+		}
+
+		this.renderLegend();
+
+		this.setupNavigation(init);
+	}
+
+	calc() {} // builds state
+
+	updateWidth() {
+		this.baseWidth = getElementContentWidth(this.parent);
+		this.width = this.baseWidth - getExtraWidth(this.measures);
+	}
+
+	makeChartArea() {
+		if(this.svg) {
+			this.container.removeChild(this.svg);
+		}
+		let m = this.measures;
+
+		this.svg = makeSVGContainer(
+			this.container,
+			'frappe-chart chart',
+			this.baseWidth,
+			this.baseHeight
+		);
+		this.svgDefs = makeSVGDefs(this.svg);
+
+		if(this.title.length) {
+			this.titleEL = makeText(
+				'title',
+				m.margins.left,
+				m.margins.top,
+				this.title,
+				{
+					fontSize: m.titleFontSize,
+					fill: '#666666',
+					dy: m.titleFontSize
+				}
+			);
+		}
+
+		let top = getTopOffset(m);
+		this.drawArea = makeSVGGroup(
+			this.type + '-chart chart-draw-area',
+			`translate(${getLeftOffset(m)}, ${top})`
+		);
+
+		if(this.config.showLegend) {
+			top += this.height + m.paddings.bottom;
+			this.legendArea = makeSVGGroup(
+				'chart-legend',
+				`translate(${getLeftOffset(m)}, ${top})`
+			);
+		}
+
+		if(this.title.length) { this.svg.appendChild(this.titleEL); }
+		this.svg.appendChild(this.drawArea);
+		if(this.config.showLegend) { this.svg.appendChild(this.legendArea); }
+
+		this.updateTipOffset(getLeftOffset(m), getTopOffset(m));
+	}
+
+	updateTipOffset(x, y) {
+		this.tip.offset = {
+			x: x,
+			y: y
+		};
+	}
+
+	setupComponents() { this.components = new Map(); }
+
+	update(data) {
+		if(!data) {
+			console.error('No data to update.');
+		}
+		this.data = this.prepareData(data);
+		this.calc(); // builds state
+		this.render();
+	}
+
+	render(components=this.components, animate=true) {
+		if(this.config.isNavigable) {
+			// Remove all existing overlays
+			this.overlays.map(o => o.parentNode.removeChild(o));
+			// ref.parentNode.insertBefore(element, ref);
+		}
+		let elementsToAnimate = [];
+		// Can decouple to this.refreshComponents() first to save animation timeout
+		components.forEach(c => {
+			elementsToAnimate = elementsToAnimate.concat(c.update(animate));
+		});
+		if(elementsToAnimate.length > 0) {
+			runSMILAnimation(this.container, this.svg, elementsToAnimate);
+			setTimeout(() => {
+				components.forEach(c => c.make());
+				this.updateNav();
+			}, CHART_POST_ANIMATE_TIMEOUT);
+		} else {
+			components.forEach(c => c.make());
+			this.updateNav();
+		}
+	}
+
+	updateNav() {
+		if(this.config.isNavigable) {
+			this.makeOverlay();
+			this.bindUnits();
+		}
+	}
+
+	renderLegend() {}
+
+	setupNavigation(init=false) {
+		if(!this.config.isNavigable) return;
+
+		if(init) {
+			this.bindOverlay();
+
+			this.keyActions = {
+				'13': this.onEnterKey.bind(this),
+				'37': this.onLeftArrow.bind(this),
+				'38': this.onUpArrow.bind(this),
+				'39': this.onRightArrow.bind(this),
+				'40': this.onDownArrow.bind(this),
+			};
+
+			document.addEventListener('keydown', (e) => {
+				if(isElementInViewport(this.container)) {
+					e = e || window.event;
+					if(this.keyActions[e.keyCode]) {
+						this.keyActions[e.keyCode]();
+					}
+				}
+			});
+		}
+	}
+
+	makeOverlay() {}
+	updateOverlay() {}
+	bindOverlay() {}
+	bindUnits() {}
+
+	onLeftArrow() {}
+	onRightArrow() {}
+	onUpArrow() {}
+	onDownArrow() {}
+	onEnterKey() {}
+
+	addDataPoint() {}
+	removeDataPoint() {}
+
+	getDataPoint() {}
+	setCurrentDataPoint() {}
+
+	updateDataset() {}
+
+	export() {
+		let chartSvg = prepareForExport(this.svg);
+		downloadFile(this.title || 'Chart', [chartSvg]);
+	}
+}
+
+class AggregationChart extends BaseChart {
+	constructor(parent, args) {
+		super(parent, args);
+	}
+
+	configure(args) {
+		super.configure(args);
+
+		this.config.maxSlices = args.maxSlices || 20;
+		this.config.maxLegendPoints = args.maxLegendPoints || 20;
+	}
+
+	calc() {
+		let s = this.state;
+		let maxSlices = this.config.maxSlices;
+		s.sliceTotals = [];
+
+		let allTotals = this.data.labels.map((label, i) => {
+			let total = 0;
+			this.data.datasets.map(e => {
+				total += e.values[i];
+			});
+			return [total, label];
+		}).filter(d => { return d[0] >= 0; }); // keep only positive results
+
+		let totals = allTotals;
+		if(allTotals.length > maxSlices) {
+			// Prune and keep a grey area for rest as per maxSlices
+			allTotals.sort((a, b) => { return b[0] - a[0]; });
+
+			totals = allTotals.slice(0, maxSlices-1);
+			let remaining = allTotals.slice(maxSlices-1);
+
+			let sumOfRemaining = 0;
+			remaining.map(d => {sumOfRemaining += d[0];});
+			totals.push([sumOfRemaining, 'Rest']);
+			this.colors[maxSlices-1] = 'grey';
+		}
+
+		s.labels = [];
+		totals.map(d => {
+			s.sliceTotals.push(d[0]);
+			s.labels.push(d[1]);
+		});
+
+		s.grandTotal = s.sliceTotals.reduce((a, b) => a + b, 0);
+
+		this.center = {
+			x: this.width / 2,
+			y: this.height / 2
+		};
+	}
+
+	renderLegend() {
+		let s = this.state;
+		this.legendArea.textContent = '';
+		this.legendTotals = s.sliceTotals.slice(0, this.config.maxLegendPoints);
+
+		let count = 0;
+		let y = 0;
+		this.legendTotals.map((d, i) => {
+			let barWidth = 110;
+			let divisor = Math.floor(
+				(this.width - getExtraWidth(this.measures))/barWidth
+			);
+			if(count > divisor) {
+				count = 0;
+				y += 20;
+			}
+			let x = barWidth * count + 5;
+			let dot = legendDot(
+				x,
+				y,
+				5,
+				this.colors[i],
+				`${s.labels[i]}: ${d}`
+			);
+			this.legendArea.appendChild(dot);
+			count++;
+		});
+	}
+}
+
+// Playing around with dates
+
+const NO_OF_YEAR_MONTHS = 12;
+const NO_OF_DAYS_IN_WEEK = 7;
+
+const NO_OF_MILLIS = 1000;
+const SEC_IN_DAY = 86400;
+
+const MONTH_NAMES = ["January", "February", "March", "April", "May",
+	"June", "July", "August", "September", "October", "November", "December"];
+
+
+const DAY_NAMES_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
+// https://stackoverflow.com/a/11252167/6495043
+function treatAsUtc(date) {
+	let result = new Date(date);
+	result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+	return result;
+}
+
+function getYyyyMmDd(date) {
+	let dd = date.getDate();
+	let mm = date.getMonth() + 1; // getMonth() is zero-based
+	return [
+		date.getFullYear(),
+		(mm>9 ? '' : '0') + mm,
+		(dd>9 ? '' : '0') + dd
+	].join('-');
+}
+
+function clone(date) {
+	return new Date(date.getTime());
+}
+
+
+
+
+
+// export function getMonthsBetween(startDate, endDate) {}
+
+function getWeeksBetween(startDate, endDate) {
+	let weekStartDate = setDayToSunday(startDate);
+	return Math.ceil(getDaysBetween(weekStartDate, endDate) / NO_OF_DAYS_IN_WEEK);
+}
+
+function getDaysBetween(startDate, endDate) {
+	let millisecondsPerDay = SEC_IN_DAY * NO_OF_MILLIS;
+	return (treatAsUtc(endDate) - treatAsUtc(startDate)) / millisecondsPerDay;
+}
+
+function areInSameMonth(startDate, endDate) {
+	return startDate.getMonth() === endDate.getMonth()
+		&& startDate.getFullYear() === endDate.getFullYear();
+}
+
+function getMonthName(i, short=false) {
+	let monthName = MONTH_NAMES[i];
+	return short ? monthName.slice(0, 3) : monthName;
+}
+
+function getLastDateInMonth (month, year) {
+	return new Date(year, month + 1, 0); // 0: last day in previous month
+}
+
+// mutates
+function setDayToSunday(date) {
+	let newDate = clone(date);
+	const day = newDate.getDay();
+	if(day !== 0) {
+		addDays(newDate, (-1) * day);
+	}
+	return newDate;
+}
+
+// mutates
+function addDays(date, numberOfDays) {
+	date.setDate(date.getDate() + numberOfDays);
+}
+
+class ChartComponent {
+	constructor({
+		layerClass = '',
+		layerTransform = '',
+		constants,
+
+		getData,
+		makeElements,
+		animateElements
+	}) {
+		this.layerTransform = layerTransform;
+		this.constants = constants;
+
+		this.makeElements = makeElements;
+		this.getData = getData;
+
+		this.animateElements = animateElements;
+
+		this.store = [];
+		this.labels = [];
+
+		this.layerClass = layerClass;
+		this.layerClass = typeof(this.layerClass) === 'function'
+			? this.layerClass() : this.layerClass;
+
+		this.refresh();
+	}
+
+	refresh(data) {
+		this.data = data || this.getData();
+	}
+
+	setup(parent) {
+		this.layer = makeSVGGroup(this.layerClass, this.layerTransform, parent);
+	}
+
+	make() {
+		this.render(this.data);
+		this.oldData = this.data;
+	}
+
+	render(data) {
+		this.store = this.makeElements(data);
+
+		this.layer.textContent = '';
+		this.store.forEach(element => {
+			this.layer.appendChild(element);
+		});
+		this.labels.forEach(element => {
+			this.layer.appendChild(element);
+		});
+	}
+
+	update(animate = true) {
+		this.refresh();
+		let animateElements = [];
+		if(animate) {
+			animateElements = this.animateElements(this.data) || [];
+		}
+		return animateElements;
+	}
+}
+
+let componentConfigs = {
+	pieSlices: {
+		layerClass: 'pie-slices',
+		makeElements(data) {
+			return data.sliceStrings.map((s, i) =>{
+				let slice = makePath(s, 'pie-path', 'none', data.colors[i]);
+				slice.style.transition = 'transform .3s;';
+				return slice;
+			});
+		},
+
+		animateElements(newData) {
+			return this.store.map((slice, i) =>
+				animatePathStr(slice, newData.sliceStrings[i])
+			);
+		}
+	},
+	percentageBars: {
+		layerClass: 'percentage-bars',
+		makeElements(data) {
+			return data.xPositions.map((x, i) =>{
+				let y = 0;
+				let bar = percentageBar(x, y, data.widths[i],
+					this.constants.barHeight, this.constants.barDepth, data.colors[i]);
+				return bar;
+			});
+		},
+
+		animateElements(newData) {
+			if(newData) return [];
+		}
+	},
+	yAxis: {
+		layerClass: 'y axis',
+		makeElements(data) {
+			return data.positions.map((position, i) =>
+				yLine(position, data.labels[i], this.constants.width,
+					{mode: this.constants.mode, pos: this.constants.pos})
+			);
+		},
+
+		animateElements(newData) {
+			let newPos = newData.positions;
+			let newLabels = newData.labels;
+			let oldPos = this.oldData.positions;
+			let oldLabels = this.oldData.labels;
+
+			[oldPos, newPos] = equilizeNoOfElements(oldPos, newPos);
+			[oldLabels, newLabels] = equilizeNoOfElements(oldLabels, newLabels);
+
+			this.render({
+				positions: oldPos,
+				labels: newLabels
+			});
+
+			return this.store.map((line, i) => {
+				return translateHoriLine(
+					line, newPos[i], oldPos[i]
+				);
+			});
+		}
+	},
+
+	xAxis: {
+		layerClass: 'x axis',
+		makeElements(data) {
+			return data.positions.map((position, i) =>
+				xLine(position, data.calcLabels[i], this.constants.height,
+					{mode: this.constants.mode, pos: this.constants.pos})
+			);
+		},
+
+		animateElements(newData) {
+			let newPos = newData.positions;
+			let newLabels = newData.calcLabels;
+			let oldPos = this.oldData.positions;
+			let oldLabels = this.oldData.calcLabels;
+
+			[oldPos, newPos] = equilizeNoOfElements(oldPos, newPos);
+			[oldLabels, newLabels] = equilizeNoOfElements(oldLabels, newLabels);
+
+			this.render({
+				positions: oldPos,
+				calcLabels: newLabels
+			});
+
+			return this.store.map((line, i) => {
+				return translateVertLine(
+					line, newPos[i], oldPos[i]
+				);
+			});
+		}
+	},
+
+	yMarkers: {
+		layerClass: 'y-markers',
+		makeElements(data) {
+			return data.map(m =>
+				yMarker(m.position, m.label, this.constants.width,
+					{labelPos: m.options.labelPos, mode: 'span', lineType: 'dashed'})
+			);
+		},
+		animateElements(newData) {
+			[this.oldData, newData] = equilizeNoOfElements(this.oldData, newData);
+
+			let newPos = newData.map(d => d.position);
+			let newLabels = newData.map(d => d.label);
+			let newOptions = newData.map(d => d.options);
+
+			let oldPos = this.oldData.map(d => d.position);
+
+			this.render(oldPos.map((pos, i) => {
+				return {
+					position: oldPos[i],
+					label: newLabels[i],
+					options: newOptions[i]
+				};
+			}));
+
+			return this.store.map((line, i) => {
+				return translateHoriLine(
+					line, newPos[i], oldPos[i]
+				);
+			});
+		}
+	},
+
+	yRegions: {
+		layerClass: 'y-regions',
+		makeElements(data) {
+			return data.map(r =>
+				yRegion(r.startPos, r.endPos, this.constants.width,
+					r.label, {labelPos: r.options.labelPos})
+			);
+		},
+		animateElements(newData) {
+			[this.oldData, newData] = equilizeNoOfElements(this.oldData, newData);
+
+			let newPos = newData.map(d => d.endPos);
+			let newLabels = newData.map(d => d.label);
+			let newStarts = newData.map(d => d.startPos);
+			let newOptions = newData.map(d => d.options);
+
+			let oldPos = this.oldData.map(d => d.endPos);
+			let oldStarts = this.oldData.map(d => d.startPos);
+
+			this.render(oldPos.map((pos, i) => {
+				return {
+					startPos: oldStarts[i],
+					endPos: oldPos[i],
+					label: newLabels[i],
+					options: newOptions[i]
+				};
+			}));
+
+			let animateElements = [];
+
+			this.store.map((rectGroup, i) => {
+				animateElements = animateElements.concat(animateRegion(
+					rectGroup, newStarts[i], newPos[i], oldPos[i]
+				));
+			});
+
+			return animateElements;
+		}
+	},
+
+	heatDomain: {
+		layerClass: function() { return 'heat-domain domain-' + this.constants.index; },
+		makeElements(data) {
+			let {index, colWidth, rowHeight, squareSize, xTranslate} = this.constants;
+			let monthNameHeight = -12;
+			let x = xTranslate, y = 0;
+
+			this.serializedSubDomains = [];
+
+			data.cols.map((week, weekNo) => {
+				if(weekNo === 1) {
+					this.labels.push(
+						makeText('domain-name', x, monthNameHeight, getMonthName(index, true).toUpperCase(),
+							{
+								fontSize: 9
+							}
+						)
+					);
+				}
+				week.map((day, i) => {
+					if(day.fill) {
+						let data = {
+							'data-date': day.yyyyMmDd,
+							'data-value': day.dataValue,
+							'data-day': i
+						};
+						let square = heatSquare('day', x, y, squareSize, day.fill, data);
+						this.serializedSubDomains.push(square);
+					}
+					y += rowHeight;
+				});
+				y = 0;
+				x += colWidth;
+			});
+
+			return this.serializedSubDomains;
+		},
+
+		animateElements(newData) {
+			if(newData) return [];
+		}
+	},
+
+	barGraph: {
+		layerClass: function() { return 'dataset-units dataset-bars dataset-' + this.constants.index; },
+		makeElements(data) {
+			let c = this.constants;
+			this.unitType = 'bar';
+			this.units = data.yPositions.map((y, j) => {
+				return datasetBar(
+					data.xPositions[j],
+					y,
+					data.barWidth,
+					c.color,
+					data.labels[j],
+					j,
+					data.offsets[j],
+					{
+						zeroLine: data.zeroLine,
+						barsWidth: data.barsWidth,
+						minHeight: c.minHeight
+					}
+				);
+			});
+			return this.units;
+		},
+		animateElements(newData) {
+			let newXPos = newData.xPositions;
+			let newYPos = newData.yPositions;
+			let newOffsets = newData.offsets;
+			let newLabels = newData.labels;
+
+			let oldXPos = this.oldData.xPositions;
+			let oldYPos = this.oldData.yPositions;
+			let oldOffsets = this.oldData.offsets;
+			let oldLabels = this.oldData.labels;
+
+			[oldXPos, newXPos] = equilizeNoOfElements(oldXPos, newXPos);
+			[oldYPos, newYPos] = equilizeNoOfElements(oldYPos, newYPos);
+			[oldOffsets, newOffsets] = equilizeNoOfElements(oldOffsets, newOffsets);
+			[oldLabels, newLabels] = equilizeNoOfElements(oldLabels, newLabels);
+
+			this.render({
+				xPositions: oldXPos,
+				yPositions: oldYPos,
+				offsets: oldOffsets,
+				labels: newLabels,
+
+				zeroLine: this.oldData.zeroLine,
+				barsWidth: this.oldData.barsWidth,
+				barWidth: this.oldData.barWidth,
+			});
+
+			let animateElements = [];
+
+			this.store.map((bar, i) => {
+				animateElements = animateElements.concat(animateBar(
+					bar, newXPos[i], newYPos[i], newData.barWidth, newOffsets[i],
+					{zeroLine: newData.zeroLine}
+				));
+			});
+
+			return animateElements;
+		}
+	},
+
+	lineGraph: {
+		layerClass: function() { return 'dataset-units dataset-line dataset-' + this.constants.index; },
+		makeElements(data) {
+			let c = this.constants;
+			this.unitType = 'dot';
+			this.paths = {};
+			if(!c.hideLine) {
+				this.paths = getPaths(
+					data.xPositions,
+					data.yPositions,
+					c.color,
+					{
+						heatline: c.heatline,
+						regionFill: c.regionFill
+					},
+					{
+						svgDefs: c.svgDefs,
+						zeroLine: data.zeroLine
+					}
+				);
+			}
+
+			this.units = [];
+			if(!c.hideDots) {
+				this.units = data.yPositions.map((y, j) => {
+					return datasetDot(
+						data.xPositions[j],
+						y,
+						data.radius,
+						c.color,
+						(c.valuesOverPoints ? data.values[j] : ''),
+						j
+					);
+				});
+			}
+
+			return Object.values(this.paths).concat(this.units);
+		},
+		animateElements(newData) {
+			let newXPos = newData.xPositions;
+			let newYPos = newData.yPositions;
+			let newValues = newData.values;
+
+			let oldXPos = this.oldData.xPositions;
+			let oldYPos = this.oldData.yPositions;
+			let oldValues = this.oldData.values;
+
+			[oldXPos, newXPos] = equilizeNoOfElements(oldXPos, newXPos);
+			[oldYPos, newYPos] = equilizeNoOfElements(oldYPos, newYPos);
+			[oldValues, newValues] = equilizeNoOfElements(oldValues, newValues);
+
+			this.render({
+				xPositions: oldXPos,
+				yPositions: oldYPos,
+				values: newValues,
+
+				zeroLine: this.oldData.zeroLine,
+				radius: this.oldData.radius,
+			});
+
+			let animateElements = [];
+
+			if(Object.keys(this.paths).length) {
+				animateElements = animateElements.concat(animatePath(
+					this.paths, newXPos, newYPos, newData.zeroLine));
+			}
+
+			if(this.units.length) {
+				this.units.map((dot, i) => {
+					animateElements = animateElements.concat(animateDot(
+						dot, newXPos[i], newYPos[i]));
+				});
+			}
+
+			return animateElements;
+		}
+	}
+};
+
+function getComponent(name, constants, getData) {
+	let keys = Object.keys(componentConfigs).filter(k => name.includes(k));
+	let config = componentConfigs[keys[0]];
+	Object.assign(config, {
+		constants: constants,
+		getData: getData
+	});
+	return new ChartComponent(config);
+}
+
+class PercentageChart extends AggregationChart {
+	constructor(parent, args) {
+		super(parent, args);
+		this.type = 'percentage';
+		this.setup();
+	}
+
+	setMeasures(options) {
+		let m = this.measures;
+		this.barOptions = options.barOptions || {};
+
+		let b = this.barOptions;
+		b.height = b.height || PERCENTAGE_BAR_DEFAULT_HEIGHT;
+		b.depth = b.depth || PERCENTAGE_BAR_DEFAULT_DEPTH;
+
+		m.paddings.right = 30;
+		m.legendHeight = 80;
+		m.baseHeight = (b.height + b.depth * 0.5) * 8;
+	}
+
+	setupComponents() {
+		let s = this.state;
+
+		let componentConfigs = [
+			[
+				'percentageBars',
+				{
+					barHeight: this.barOptions.height,
+					barDepth: this.barOptions.depth,
+				},
+				function() {
+					return {
+						xPositions: s.xPositions,
+						widths: s.widths,
+						colors: this.colors
+					};
+				}.bind(this)
+			]
+		];
+
+		this.components = new Map(componentConfigs
+			.map(args => {
+				let component = getComponent(...args);
+				return [args[0], component];
+			}));
+	}
+
+	calc() {
+		super.calc();
+		let s = this.state;
+
+		s.xPositions = [];
+		s.widths = [];
+
+		let xPos = 0;
+		s.sliceTotals.map((value) => {
+			let width = this.width * value / s.grandTotal;
+			s.widths.push(width);
+			s.xPositions.push(xPos);
+			xPos += width;
+		});
+	}
+
+	makeDataByIndex() { }
+
+	bindTooltip() {
+		let s = this.state;
+		this.container.addEventListener('mousemove', (e) => {
+			let bars = this.components.get('percentageBars').store;
+			let bar = e.target;
+			if(bars.includes(bar)) {
+
+				let i = bars.indexOf(bar);
+				let gOff = getOffset(this.container), pOff = getOffset(bar);
+
+				let x = pOff.left - gOff.left + parseInt(bar.getAttribute('width'))/2;
+				let y = pOff.top - gOff.top;
+				let title = (this.formattedLabels && this.formattedLabels.length>0
+					? this.formattedLabels[i] : this.state.labels[i]) + ': ';
+				let fraction = s.sliceTotals[i]/s.grandTotal;
+
+				this.tip.setValues(x, y, {name: title, value: (fraction*100).toFixed(1) + "%"});
+				this.tip.showTip();
+			}
+		});
+	}
+}
+
+class PieChart extends AggregationChart {
+	constructor(parent, args) {
+		super(parent, args);
+		this.type = 'pie';
+		this.initTimeout = 0;
+		this.init = 1;
+
+		this.setup();
+	}
+
+	configure(args) {
+		super.configure(args);
+		this.mouseMove = this.mouseMove.bind(this);
+		this.mouseLeave = this.mouseLeave.bind(this);
+
+		this.hoverRadio = args.hoverRadio || 0.1;
+		this.config.startAngle = args.startAngle || 0;
+
+		this.clockWise = args.clockWise || false;
+	}
+
+	calc() {
+		super.calc();
+		let s = this.state;
+		this.radius = (this.height > this.width ? this.center.x : this.center.y);
+
+		const { radius, clockWise } = this;
+
+		const prevSlicesProperties = s.slicesProperties || [];
+		s.sliceStrings = [];
+		s.slicesProperties = [];
+		let curAngle = 180 - this.config.startAngle;
+
+		s.sliceTotals.map((total, i) => {
+			const startAngle = curAngle;
+			const originDiffAngle = (total / s.grandTotal) * FULL_ANGLE;
+			const diffAngle = clockWise ? -originDiffAngle : originDiffAngle;
+			const endAngle = curAngle = curAngle + diffAngle;
+			const startPosition = getPositionByAngle(startAngle, radius);
+			const endPosition = getPositionByAngle(endAngle, radius);
+
+			const prevProperty = this.init && prevSlicesProperties[i];
+
+			let curStart,curEnd;
+			if(this.init) {
+				curStart = prevProperty ? prevProperty.startPosition : startPosition;
+				curEnd = prevProperty ? prevProperty.endPosition : startPosition;
+			} else {
+				curStart = startPosition;
+				curEnd = endPosition;
+			}
+			const curPath = makeArcPathStr(curStart, curEnd, this.center, this.radius, this.clockWise);
+
+			s.sliceStrings.push(curPath);
+			s.slicesProperties.push({
+				startPosition,
+				endPosition,
+				value: total,
+				total: s.grandTotal,
+				startAngle,
+				endAngle,
+				angle: diffAngle
+			});
+
+		});
+		this.init = 0;
+	}
+
+	setupComponents() {
+		let s = this.state;
+
+		let componentConfigs = [
+			[
+				'pieSlices',
+				{ },
+				function() {
+					return {
+						sliceStrings: s.sliceStrings,
+						colors: this.colors
+					};
+				}.bind(this)
+			]
+		];
+
+		this.components = new Map(componentConfigs
+			.map(args => {
+				let component = getComponent(...args);
+				return [args[0], component];
+			}));
+	}
+
+	calTranslateByAngle(property){
+		const{radius,hoverRadio} = this;
+		const position = getPositionByAngle(property.startAngle+(property.angle / 2),radius);
+		return `translate3d(${(position.x) * hoverRadio}px,${(position.y) * hoverRadio}px,0)`;
+	}
+
+	hoverSlice(path,i,flag,e){
+		if(!path) return;
+		const color = this.colors[i];
+		if(flag) {
+			transform(path, this.calTranslateByAngle(this.state.slicesProperties[i]));
+			path.style.fill = lightenDarkenColor(color, 50);
+			let g_off = getOffset(this.svg);
+			let x = e.pageX - g_off.left + 10;
+			let y = e.pageY - g_off.top - 10;
+			let title = (this.formatted_labels && this.formatted_labels.length > 0
+				? this.formatted_labels[i] : this.state.labels[i]) + ': ';
+			let percent = (this.state.sliceTotals[i] * 100 / this.state.grandTotal).toFixed(1);
+			this.tip.setValues(x, y, {name: title, value: percent + "%"});
+			this.tip.showTip();
+		} else {
+			transform(path,'translate3d(0,0,0)');
+			this.tip.hideTip();
+			path.style.fill = color;
+		}
+	}
+
+	bindTooltip() {
+		this.container.addEventListener('mousemove', this.mouseMove);
+		this.container.addEventListener('mouseleave', this.mouseLeave);
+	}
+
+	mouseMove(e){
+		const target = e.target;
+		let slices = this.components.get('pieSlices').store;
+		let prevIndex = this.curActiveSliceIndex;
+		let prevAcitve = this.curActiveSlice;
+		if(slices.includes(target)) {
+			let i = slices.indexOf(target);
+			this.hoverSlice(prevAcitve, prevIndex,false);
+			this.curActiveSlice = target;
+			this.curActiveSliceIndex = i;
+			this.hoverSlice(target, i, true, e);
+		} else {
+			this.mouseLeave();
+		}
+	}
+
+	mouseLeave(){
+		this.hoverSlice(this.curActiveSlice,this.curActiveSliceIndex,false);
+	}
+}
+
+function normalize(x) {
+	// Calculates mantissa and exponent of a number
+	// Returns normalized number and exponent
+	// https://stackoverflow.com/q/9383593/6495043
+
+	if(x===0) {
+		return [0, 0];
+	}
+	if(isNaN(x)) {
+		return {mantissa: -6755399441055744, exponent: 972};
+	}
+	var sig = x > 0 ? 1 : -1;
+	if(!isFinite(x)) {
+		return {mantissa: sig * 4503599627370496, exponent: 972};
+	}
+
+	x = Math.abs(x);
+	var exp = Math.floor(Math.log10(x));
+	var man = x/Math.pow(10, exp);
+
+	return [sig * man, exp];
+}
+
+function getChartRangeIntervals(max, min=0) {
+	let upperBound = Math.ceil(max);
+	let lowerBound = Math.floor(min);
+	let range = upperBound - lowerBound;
+
+	let noOfParts = range;
+	let partSize = 1;
+
+	// To avoid too many partitions
+	if(range > 5) {
+		if(range % 2 !== 0) {
+			upperBound++;
+			// Recalc range
+			range = upperBound - lowerBound;
+		}
+		noOfParts = range/2;
+		partSize = 2;
+	}
+
+	// Special case: 1 and 2
+	if(range <= 2) {
+		noOfParts = 4;
+		partSize = range/noOfParts;
+	}
+
+	// Special case: 0
+	if(range === 0) {
+		noOfParts = 5;
+		partSize = 1;
+	}
+
+	let intervals = [];
+	for(var i = 0; i <= noOfParts; i++){
+		intervals.push(lowerBound + partSize * i);
+	}
+	return intervals;
+}
+
+function getChartIntervals(maxValue, minValue=0) {
+	let [normalMaxValue, exponent] = normalize(maxValue);
+	let normalMinValue = minValue ? minValue/Math.pow(10, exponent): 0;
+
+	// Allow only 7 significant digits
+	normalMaxValue = normalMaxValue.toFixed(6);
+
+	let intervals = getChartRangeIntervals(normalMaxValue, normalMinValue);
+	intervals = intervals.map(value => value * Math.pow(10, exponent));
+	return intervals;
+}
+
+function calcChartIntervals(values, withMinimum=false) {
+	//*** Where the magic happens ***
+
+	// Calculates best-fit y intervals from given values
+	// and returns the interval array
+
+	let maxValue = Math.max(...values);
+	let minValue = Math.min(...values);
+
+	// Exponent to be used for pretty print
+	let exponent = 0, intervals = []; // eslint-disable-line no-unused-vars
+
+	function getPositiveFirstIntervals(maxValue, absMinValue) {
+		let intervals = getChartIntervals(maxValue);
+
+		let intervalSize = intervals[1] - intervals[0];
+
+		// Then unshift the negative values
+		let value = 0;
+		for(var i = 1; value < absMinValue; i++) {
+			value += intervalSize;
+			intervals.unshift((-1) * value);
+		}
+		return intervals;
+	}
+
+	// CASE I: Both non-negative
+
+	if(maxValue >= 0 && minValue >= 0) {
+		exponent = normalize(maxValue)[1];
+		if(!withMinimum) {
+			intervals = getChartIntervals(maxValue);
+		} else {
+			intervals = getChartIntervals(maxValue, minValue);
+		}
+	}
+
+	// CASE II: Only minValue negative
+
+	else if(maxValue > 0 && minValue < 0) {
+		// `withMinimum` irrelevant in this case,
+		// We'll be handling both sides of zero separately
+		// (both starting from zero)
+		// Because ceil() and floor() behave differently
+		// in those two regions
+
+		let absMinValue = Math.abs(minValue);
+
+		if(maxValue >= absMinValue) {
+			exponent = normalize(maxValue)[1];
+			intervals = getPositiveFirstIntervals(maxValue, absMinValue);
+		} else {
+			// Mirror: maxValue => absMinValue, then change sign
+			exponent = normalize(absMinValue)[1];
+			let posIntervals = getPositiveFirstIntervals(absMinValue, maxValue);
+			intervals = posIntervals.map(d => d * (-1));
+		}
+
+	}
+
+	// CASE III: Both non-positive
+
+	else if(maxValue <= 0 && minValue <= 0) {
+		// Mirrored Case I:
+		// Work with positives, then reverse the sign and array
+
+		let pseudoMaxValue = Math.abs(minValue);
+		let pseudoMinValue = Math.abs(maxValue);
+
+		exponent = normalize(pseudoMaxValue)[1];
+		if(!withMinimum) {
+			intervals = getChartIntervals(pseudoMaxValue);
+		} else {
+			intervals = getChartIntervals(pseudoMaxValue, pseudoMinValue);
+		}
+
+		intervals = intervals.reverse().map(d => d * (-1));
+	}
+
+	return intervals;
+}
+
+function getZeroIndex(yPts) {
+	let zeroIndex;
+	let interval = getIntervalSize(yPts);
+	if(yPts.indexOf(0) >= 0) {
+		// the range has a given zero
+		// zero-line on the chart
+		zeroIndex = yPts.indexOf(0);
+	} else if(yPts[0] > 0) {
+		// Minimum value is positive
+		// zero-line is off the chart: below
+		let min = yPts[0];
+		zeroIndex = (-1) * min / interval;
+	} else {
+		// Maximum value is negative
+		// zero-line is off the chart: above
+		let max = yPts[yPts.length - 1];
+		zeroIndex = (-1) * max / interval + (yPts.length - 1);
+	}
+	return zeroIndex;
+}
+
+
+
+function getIntervalSize(orderedArray) {
+	return orderedArray[1] - orderedArray[0];
+}
+
+function getValueRange(orderedArray) {
+	return orderedArray[orderedArray.length-1] - orderedArray[0];
+}
+
+function scale(val, yAxis) {
+	return floatTwo(yAxis.zeroLine - val * yAxis.scaleMultiplier);
+}
+
+
+
+
+
+function getClosestInArray(goal, arr, index = false) {
+	let closest = arr.reduce(function(prev, curr) {
+		return (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
+	});
+
+	return index ? arr.indexOf(closest) : closest;
+}
+
+function calcDistribution(values, distributionSize) {
+	// Assume non-negative values,
+	// implying distribution minimum at zero
+
+	let dataMaxValue = Math.max(...values);
+
+	let distributionStep = 1 / (distributionSize - 1);
+	let distribution = [];
+
+	for(var i = 0; i < distributionSize; i++) {
+		let checkpoint = dataMaxValue * (distributionStep * i);
+		distribution.push(checkpoint);
+	}
+
+	return distribution;
+}
+
+function getMaxCheckpoint(value, distribution) {
+	return distribution.filter(d => d < value).length;
+}
+
+const COL_WIDTH = HEATMAP_SQUARE_SIZE + HEATMAP_GUTTER_SIZE;
+const ROW_HEIGHT = COL_WIDTH;
+// const DAY_INCR = 1;
+
+class Heatmap extends BaseChart {
+	constructor(parent, options) {
+		super(parent, options);
+		this.type = 'heatmap';
+
+		this.countLabel = options.countLabel || '';
+
+		let validStarts = ['Sunday', 'Monday'];
+		let startSubDomain = validStarts.includes(options.startSubDomain)
+			? options.startSubDomain : 'Sunday';
+		this.startSubDomainIndex = validStarts.indexOf(startSubDomain);
+
+		this.setup();
+	}
+
+	setMeasures(options) {
+		let m = this.measures;
+		this.discreteDomains = options.discreteDomains === 0 ? 0 : 1;
+
+		m.paddings.top = ROW_HEIGHT * 3;
+		m.paddings.bottom = 0;
+		m.legendHeight = ROW_HEIGHT * 2;
+		m.baseHeight = ROW_HEIGHT * NO_OF_DAYS_IN_WEEK
+			+ getExtraHeight(m);
+
+		let d = this.data;
+		let spacing = this.discreteDomains ? NO_OF_YEAR_MONTHS : 0;
+		this.independentWidth = (getWeeksBetween(d.start, d.end)
+			+ spacing) * COL_WIDTH + getExtraWidth(m);
+	}
+
+	updateWidth() {
+		let spacing = this.discreteDomains ? NO_OF_YEAR_MONTHS : 0;
+		let noOfWeeks = this.state.noOfWeeks ? this.state.noOfWeeks : 52;
+		this.baseWidth = (noOfWeeks + spacing) * COL_WIDTH
+			+ getExtraWidth(this.measures);
+	}
+
+	prepareData(data=this.data) {
+		if(data.start && data.end && data.start > data.end) {
+			throw new Error('Start date cannot be greater than end date.');
+		}
+
+		if(!data.start) {
+			data.start = new Date();
+			data.start.setFullYear( data.start.getFullYear() - 1 );
+		}
+		if(!data.end) { data.end = new Date(); }
+		data.dataPoints = data.dataPoints || {};
+
+		if(parseInt(Object.keys(data.dataPoints)[0]) > 100000) {
+			let points = {};
+			Object.keys(data.dataPoints).forEach(timestampSec$$1 => {
+				let date = new Date(timestampSec$$1 * NO_OF_MILLIS);
+				points[getYyyyMmDd(date)] = data.dataPoints[timestampSec$$1];
+			});
+			data.dataPoints = points;
+		}
+
+		return data;
+	}
+
+	calc() {
+		let s = this.state;
+
+		s.start = clone(this.data.start);
+		s.end = clone(this.data.end);
+
+		s.firstWeekStart = clone(s.start);
+		s.noOfWeeks = getWeeksBetween(s.start, s.end);
+		s.distribution = calcDistribution(
+			Object.values(this.data.dataPoints), HEATMAP_DISTRIBUTION_SIZE);
+
+		s.domainConfigs = this.getDomains();
+	}
+
+	setupComponents() {
+		let s = this.state;
+		let lessCol = this.discreteDomains ? 0 : 1;
+
+		let componentConfigs = s.domainConfigs.map((config, i) => [
+			'heatDomain',
+			{
+				index: config.index,
+				colWidth: COL_WIDTH,
+				rowHeight: ROW_HEIGHT,
+				squareSize: HEATMAP_SQUARE_SIZE,
+				xTranslate: s.domainConfigs
+					.filter((config, j) => j < i)
+					.map(config => config.cols.length - lessCol)
+					.reduce((a, b) => a + b, 0)
+					* COL_WIDTH
+			},
+			function() {
+				return s.domainConfigs[i];
+			}.bind(this)
+
+		]);
+
+		this.components = new Map(componentConfigs
+			.map((args, i) => {
+				let component = getComponent(...args);
+				return [args[0] + '-' + i, component];
+			})
+		);
+
+		let y = 0;
+		DAY_NAMES_SHORT.forEach((dayName, i) => {
+			if([1, 3, 5].includes(i)) {
+				let dayText = makeText('subdomain-name', -COL_WIDTH/2, y, dayName,
+					{
+						fontSize: HEATMAP_SQUARE_SIZE,
+						dy: 8,
+						textAnchor: 'end'
+					}
+				);
+				this.drawArea.appendChild(dayText);
+			}
+			y += ROW_HEIGHT;
+		});
+	}
+
+	update(data) {
+		if(!data) {
+			console.error('No data to update.');
+		}
+
+		this.data = this.prepareData(data);
+		this.draw();
+		this.bindTooltip();
+	}
+
+	bindTooltip() {
+		this.container.addEventListener('mousemove', (e) => {
+			this.components.forEach(comp => {
+				let daySquares = comp.store;
+				let daySquare = e.target;
+				if(daySquares.includes(daySquare)) {
+
+					let count = daySquare.getAttribute('data-value');
+					let dateParts = daySquare.getAttribute('data-date').split('-');
+
+					let month = getMonthName(parseInt(dateParts[1])-1, true);
+
+					let gOff = this.container.getBoundingClientRect(), pOff = daySquare.getBoundingClientRect();
+
+					let width = parseInt(e.target.getAttribute('width'));
+					let x = pOff.left - gOff.left + width/2;
+					let y = pOff.top - gOff.top;
+					let value = count + ' ' + this.countLabel;
+					let name = ' on ' + month + ' ' + dateParts[0] + ', ' + dateParts[2];
+
+					this.tip.setValues(x, y, {name: name, value: value, valueFirst: 1}, []);
+					this.tip.showTip();
+				}
+			});
+		});
+	}
+
+	renderLegend() {
+		this.legendArea.textContent = '';
+		let x = 0;
+		let y = ROW_HEIGHT;
+
+		let lessText = makeText('subdomain-name', x, y, 'Less',
+			{
+				fontSize: HEATMAP_SQUARE_SIZE + 1,
+				dy: 9
+			}
+		);
+		x = (COL_WIDTH * 2) + COL_WIDTH/2;
+		this.legendArea.appendChild(lessText);
+
+		this.colors.slice(0, HEATMAP_DISTRIBUTION_SIZE).map((color, i) => {
+			const square = heatSquare('heatmap-legend-unit', x + (COL_WIDTH + 3) * i,
+				y, HEATMAP_SQUARE_SIZE, color);
+			this.legendArea.appendChild(square);
+		});
+
+		let moreTextX = x + HEATMAP_DISTRIBUTION_SIZE * (COL_WIDTH + 3) + COL_WIDTH/4;
+		let moreText = makeText('subdomain-name', moreTextX, y, 'More',
+			{
+				fontSize: HEATMAP_SQUARE_SIZE + 1,
+				dy: 9
+			}
+		);
+		this.legendArea.appendChild(moreText);
+	}
+
+	getDomains() {
+		let s = this.state;
+		const [startMonth, startYear] = [s.start.getMonth(), s.start.getFullYear()];
+		const [endMonth, endYear] = [s.end.getMonth(), s.end.getFullYear()];
+
+		const noOfMonths = (endMonth - startMonth + 1) + (endYear - startYear) * 12;
+
+		let domainConfigs = [];
+
+		let startOfMonth = clone(s.start);
+		for(var i = 0; i < noOfMonths; i++) {
+			let endDate = s.end;
+			if(!areInSameMonth(startOfMonth, s.end)) {
+				let [month, year] = [startOfMonth.getMonth(), startOfMonth.getFullYear()];
+				endDate = getLastDateInMonth(month, year);
+			}
+			domainConfigs.push(this.getDomainConfig(startOfMonth, endDate));
+
+			addDays(endDate, 1);
+			startOfMonth = endDate;
+		}
+
+		return domainConfigs;
+	}
+
+	getDomainConfig(startDate, endDate='') {
+		let [month, year] = [startDate.getMonth(), startDate.getFullYear()];
+		let startOfWeek = setDayToSunday(startDate); // TODO: Monday as well
+		endDate = clone(endDate) || getLastDateInMonth(month, year);
+
+		let domainConfig = {
+			index: month,
+			cols: []
+		};
+
+		addDays(endDate, 1);
+		let noOfMonthWeeks = getWeeksBetween(startOfWeek, endDate);
+
+		let cols = [], col;
+		for(var i = 0; i < noOfMonthWeeks; i++) {
+			col = this.getCol(startOfWeek, month);
+			cols.push(col);
+
+			startOfWeek = new Date(col[NO_OF_DAYS_IN_WEEK - 1].yyyyMmDd);
+			addDays(startOfWeek, 1);
+		}
+
+		if(col[NO_OF_DAYS_IN_WEEK - 1].dataValue !== undefined) {
+			addDays(startOfWeek, 1);
+			cols.push(this.getCol(startOfWeek, month, true));
+		}
+
+		domainConfig.cols = cols;
+
+		return domainConfig;
+	}
+
+	getCol(startDate, month, empty = false) {
+		let s = this.state;
+
+		// startDate is the start of week
+		let currentDate = clone(startDate);
+		let col = [];
+
+		for(var i = 0; i < NO_OF_DAYS_IN_WEEK; i++, addDays(currentDate, 1)) {
+			let config = {};
+
+			// Non-generic adjustment for entire heatmap, needs state
+			let currentDateWithinData = currentDate >= s.start && currentDate <= s.end;
+
+			if(empty || currentDate.getMonth() !== month || !currentDateWithinData) {
+				config.yyyyMmDd = getYyyyMmDd(currentDate);
+			} else {
+				config = this.getSubDomainConfig(currentDate);
+			}
+			col.push(config);
+		}
+
+		return col;
+	}
+
+	getSubDomainConfig(date) {
+		let yyyyMmDd = getYyyyMmDd(date);
+		let dataValue = this.data.dataPoints[yyyyMmDd];
+		let config = {
+			yyyyMmDd: yyyyMmDd,
+			dataValue: dataValue || 0,
+			fill: this.colors[getMaxCheckpoint(dataValue, this.state.distribution)]
+		};
+		return config;
+	}
+}
+
+function dataPrep(data, type) {
+	data.labels = data.labels || [];
+
+	let datasetLength = data.labels.length;
+
+	// Datasets
+	let datasets = data.datasets;
+	let zeroArray = new Array(datasetLength).fill(0);
+	if(!datasets) {
+		// default
+		datasets = [{
+			values: zeroArray
+		}];
+	}
+
+	datasets.map(d=> {
+		// Set values
+		if(!d.values) {
+			d.values = zeroArray;
+		} else {
+			// Check for non values
+			let vals = d.values;
+			vals = vals.map(val => (!isNaN(val) ? val : 0));
+
+			// Trim or extend
+			if(vals.length > datasetLength) {
+				vals = vals.slice(0, datasetLength);
+			} else {
+				vals = fillArray(vals, datasetLength - vals.length, 0);
+			}
+		}
+
+		// Set labels
+		//
+
+		// Set type
+		if(!d.chartType ) {
+			if(!AXIS_DATASET_CHART_TYPES.includes(type)) type === DEFAULT_AXIS_CHART_TYPE;
+			d.chartType = type;
+		}
+
+	});
+
+	// Markers
+
+	// Regions
+	// data.yRegions = data.yRegions || [];
+	if(data.yRegions) {
+		data.yRegions.map(d => {
+			if(d.end < d.start) {
+				[d.start, d.end] = [d.end, d.start];
+			}
+		});
+	}
+
+	return data;
+}
+
+function zeroDataPrep(realData) {
+	let datasetLength = realData.labels.length;
+	let zeroArray = new Array(datasetLength).fill(0);
+
+	let zeroData = {
+		labels: realData.labels.slice(0, -1),
+		datasets: realData.datasets.map(d => {
+			return {
+				name: '',
+				values: zeroArray.slice(0, -1),
+				chartType: d.chartType
+			};
+		}),
+	};
+
+	if(realData.yMarkers) {
+		zeroData.yMarkers = [
+			{
+				value: 0,
+				label: ''
+			}
+		];
+	}
+
+	if(realData.yRegions) {
+		zeroData.yRegions = [
+			{
+				start: 0,
+				end: 0,
+				label: ''
+			}
+		];
+	}
+
+	return zeroData;
+}
+
+function getShortenedLabels(chartWidth, labels=[], isSeries=true) {
+	let allowedSpace = chartWidth / labels.length;
+	if(allowedSpace <= 0) allowedSpace = 1;
+	let allowedLetters = allowedSpace / DEFAULT_CHAR_WIDTH;
+
+	let calcLabels = labels.map((label, i) => {
+		label += "";
+		if(label.length > allowedLetters) {
+
+			if(!isSeries) {
+				if(allowedLetters-3 > 0) {
+					label = label.slice(0, allowedLetters-3) + " ...";
+				} else {
+					label = label.slice(0, allowedLetters) + '..';
+				}
+			} else {
+				let multiple = Math.ceil(label.length/allowedLetters);
+				if(i % multiple !== 0) {
+					label = "";
+				}
+			}
+		}
+		return label;
+	});
+
+	return calcLabels;
+}
+
+class AxisChart extends BaseChart {
+	constructor(parent, args) {
+		super(parent, args);
+
+		this.barOptions = args.barOptions || {};
+		this.lineOptions = args.lineOptions || {};
+
+		this.type = args.type || 'line';
+		this.init = 1;
+
+		this.setup();
+	}
+
+	setMeasures() {
+		if(this.data.datasets.length <= 1) {
+			this.config.showLegend = 0;
+			this.measures.paddings.bottom = 30;
+		}
+	}
+
+	configure(options) {
+		super.configure(options);
+
+		options.axisOptions = options.axisOptions || {};
+		options.tooltipOptions = options.tooltipOptions || {};
+
+		this.config.xAxisMode = options.axisOptions.xAxisMode || 'span';
+		this.config.yAxisMode = options.axisOptions.yAxisMode || 'span';
+		this.config.xIsSeries = options.axisOptions.xIsSeries || 0;
+
+		this.config.formatTooltipX = options.tooltipOptions.formatTooltipX;
+		this.config.formatTooltipY = options.tooltipOptions.formatTooltipY;
+
+		this.config.valuesOverPoints = options.valuesOverPoints;
+	}
+
+	prepareData(data=this.data) {
+		return dataPrep(data, this.type);
+	}
+
+	prepareFirstData(data=this.data) {
+		return zeroDataPrep(data);
+	}
+
+	calc(onlyWidthChange = false) {
+		this.calcXPositions();
+		if(!onlyWidthChange) {
+			this.calcYAxisParameters(this.getAllYValues(), this.type === 'line');
+		}
+		this.makeDataByIndex();
+	}
+
+	calcXPositions() {
+		let s = this.state;
+		let labels = this.data.labels;
+		s.datasetLength = labels.length;
+
+		s.unitWidth = this.width/(s.datasetLength);
+		// Default, as per bar, and mixed. Only line will be a special case
+		s.xOffset = s.unitWidth/2;
+
+		// // For a pure Line Chart
+		// s.unitWidth = this.width/(s.datasetLength - 1);
+		// s.xOffset = 0;
+
+		s.xAxis = {
+			labels: labels,
+			positions: labels.map((d, i) =>
+				floatTwo(s.xOffset + i * s.unitWidth)
+			)
+		};
+	}
+
+	calcYAxisParameters(dataValues, withMinimum = 'false') {
+		const yPts = calcChartIntervals(dataValues, withMinimum);
+		const scaleMultiplier = this.height / getValueRange(yPts);
+		const intervalHeight = getIntervalSize(yPts) * scaleMultiplier;
+		const zeroLine = this.height - (getZeroIndex(yPts) * intervalHeight);
+
+		this.state.yAxis = {
+			labels: yPts,
+			positions: yPts.map(d => zeroLine - d * scaleMultiplier),
+			scaleMultiplier: scaleMultiplier,
+			zeroLine: zeroLine,
+		};
+
+		// Dependent if above changes
+		this.calcDatasetPoints();
+		this.calcYExtremes();
+		this.calcYRegions();
+	}
+
+	calcDatasetPoints() {
+		let s = this.state;
+		let scaleAll = values => values.map(val => scale(val, s.yAxis));
+
+		s.datasets = this.data.datasets.map((d, i) => {
+			let values = d.values;
+			let cumulativeYs = d.cumulativeYs || [];
+			return {
+				name: d.name,
+				index: i,
+				chartType: d.chartType,
+
+				values: values,
+				yPositions: scaleAll(values),
+
+				cumulativeYs: cumulativeYs,
+				cumulativeYPos: scaleAll(cumulativeYs),
+			};
+		});
+	}
+
+	calcYExtremes() {
+		let s = this.state;
+		if(this.barOptions.stacked) {
+			s.yExtremes = s.datasets[s.datasets.length - 1].cumulativeYPos;
+			return;
+		}
+		s.yExtremes = new Array(s.datasetLength).fill(9999);
+		s.datasets.map(d => {
+			d.yPositions.map((pos, j) => {
+				if(pos < s.yExtremes[j]) {
+					s.yExtremes[j] = pos;
+				}
+			});
+		});
+	}
+
+	calcYRegions() {
+		let s = this.state;
+		if(this.data.yMarkers) {
+			this.state.yMarkers = this.data.yMarkers.map(d => {
+				d.position = scale(d.value, s.yAxis);
+				if(!d.options) d.options = {};
+				// if(!d.label.includes(':')) {
+				// 	d.label += ': ' + d.value;
+				// }
+				return d;
+			});
+		}
+		if(this.data.yRegions) {
+			this.state.yRegions = this.data.yRegions.map(d => {
+				d.startPos = scale(d.start, s.yAxis);
+				d.endPos = scale(d.end, s.yAxis);
+				if(!d.options) d.options = {};
+				return d;
+			});
+		}
+	}
+
+	getAllYValues() {
+		let key = 'values';
+
+		if(this.barOptions.stacked) {
+			key = 'cumulativeYs';
+			let cumulative = new Array(this.state.datasetLength).fill(0);
+			this.data.datasets.map((d, i) => {
+				let values = this.data.datasets[i].values;
+				d[key] = cumulative = cumulative.map((c, i) => c + values[i]);
+			});
+		}
+
+		let allValueLists = this.data.datasets.map(d => d[key]);
+		if(this.data.yMarkers) {
+			allValueLists.push(this.data.yMarkers.map(d => d.value));
+		}
+		if(this.data.yRegions) {
+			this.data.yRegions.map(d => {
+				allValueLists.push([d.end, d.start]);
+			});
+		}
+
+		return [].concat(...allValueLists);
+	}
+
+	setupComponents() {
+		let componentConfigs = [
+			[
+				'yAxis',
+				{
+					mode: this.config.yAxisMode,
+					width: this.width,
+					// pos: 'right'
+				},
+				function() {
+					return this.state.yAxis;
+				}.bind(this)
+			],
+
+			[
+				'xAxis',
+				{
+					mode: this.config.xAxisMode,
+					height: this.height,
+					// pos: 'right'
+				},
+				function() {
+					let s = this.state;
+					s.xAxis.calcLabels = getShortenedLabels(this.width,
+						s.xAxis.labels, this.config.xIsSeries);
+
+					return s.xAxis;
+				}.bind(this)
+			],
+
+			[
+				'yRegions',
+				{
+					width: this.width,
+					pos: 'right'
+				},
+				function() {
+					return this.state.yRegions;
+				}.bind(this)
+			],
+		];
+
+		let barDatasets = this.state.datasets.filter(d => d.chartType === 'bar');
+		let lineDatasets = this.state.datasets.filter(d => d.chartType === 'line');
+
+		let barsConfigs = barDatasets.map(d => {
+			let index = d.index;
+			return [
+				'barGraph' + '-' + d.index,
+				{
+					index: index,
+					color: this.colors[index],
+					stacked: this.barOptions.stacked,
+
+					// same for all datasets
+					valuesOverPoints: this.config.valuesOverPoints,
+					minHeight: this.height * MIN_BAR_PERCENT_HEIGHT,
+				},
+				function() {
+					let s = this.state;
+					let d = s.datasets[index];
+					let stacked = this.barOptions.stacked;
+
+					let spaceRatio = this.barOptions.spaceRatio || BAR_CHART_SPACE_RATIO;
+					let barsWidth = s.unitWidth * (1 - spaceRatio);
+					let barWidth = barsWidth/(stacked ? 1 : barDatasets.length);
+
+					let xPositions = s.xAxis.positions.map(x => x - barsWidth/2);
+					if(!stacked) {
+						xPositions = xPositions.map(p => p + barWidth * index);
+					}
+
+					let labels = new Array(s.datasetLength).fill('');
+					if(this.config.valuesOverPoints) {
+						if(stacked && d.index === s.datasets.length - 1) {
+							labels = d.cumulativeYs;
+						} else {
+							labels = d.values;
+						}
+					}
+
+					let offsets = new Array(s.datasetLength).fill(0);
+					if(stacked) {
+						offsets = d.yPositions.map((y, j) => y - d.cumulativeYPos[j]);
+					}
+
+					return {
+						xPositions: xPositions,
+						yPositions: d.yPositions,
+						offsets: offsets,
+						// values: d.values,
+						labels: labels,
+
+						zeroLine: s.yAxis.zeroLine,
+						barsWidth: barsWidth,
+						barWidth: barWidth,
+					};
+				}.bind(this)
+			];
+		});
+
+		let lineConfigs = lineDatasets.map(d => {
+			let index = d.index;
+			return [
+				'lineGraph' + '-' + d.index,
+				{
+					index: index,
+					color: this.colors[index],
+					svgDefs: this.svgDefs,
+					heatline: this.lineOptions.heatline,
+					regionFill: this.lineOptions.regionFill,
+					hideDots: this.lineOptions.hideDots,
+					hideLine: this.lineOptions.hideLine,
+
+					// same for all datasets
+					valuesOverPoints: this.config.valuesOverPoints,
+				},
+				function() {
+					let s = this.state;
+					let d = s.datasets[index];
+					let minLine = s.yAxis.positions[0] < s.yAxis.zeroLine
+						? s.yAxis.positions[0] : s.yAxis.zeroLine;
+
+					return {
+						xPositions: s.xAxis.positions,
+						yPositions: d.yPositions,
+
+						values: d.values,
+
+						zeroLine: minLine,
+						radius: this.lineOptions.dotSize || LINE_CHART_DOT_SIZE,
+					};
+				}.bind(this)
+			];
+		});
+
+		let markerConfigs = [
+			[
+				'yMarkers',
+				{
+					width: this.width,
+					pos: 'right'
+				},
+				function() {
+					return this.state.yMarkers;
+				}.bind(this)
+			]
+		];
+
+		componentConfigs = componentConfigs.concat(barsConfigs, lineConfigs, markerConfigs);
+
+		let optionals = ['yMarkers', 'yRegions'];
+		this.dataUnitComponents = [];
+
+		this.components = new Map(componentConfigs
+			.filter(args => !optionals.includes(args[0]) || this.state[args[0]])
+			.map(args => {
+				let component = getComponent(...args);
+				if(args[0].includes('lineGraph') || args[0].includes('barGraph')) {
+					this.dataUnitComponents.push(component);
+				}
+				return [args[0], component];
+			}));
+	}
+
+	makeDataByIndex() {
+		this.dataByIndex = {};
+
+		let s = this.state;
+		let formatX = this.config.formatTooltipX;
+		let formatY = this.config.formatTooltipY;
+		let titles = s.xAxis.labels;
+
+		titles.map((label, index) => {
+			let values = this.state.datasets.map((set, i) => {
+				let value = set.values[index];
+				return {
+					title: set.name,
+					value: value,
+					yPos: set.yPositions[index],
+					color: this.colors[i],
+					formatted: formatY ? formatY(value) : value,
+				};
+			});
+
+			this.dataByIndex[index] = {
+				label: label,
+				formattedLabel: formatX ? formatX(label) : label,
+				xPos: s.xAxis.positions[index],
+				values: values,
+				yExtreme: s.yExtremes[index],
+			};
+		});
+	}
+
+	bindTooltip() {
+		// NOTE: could be in tooltip itself, as it is a given functionality for its parent
+		this.container.addEventListener('mousemove', (e) => {
+			let m = this.measures;
+			let o = getOffset(this.container);
+			let relX = e.pageX - o.left - getLeftOffset(m);
+			let relY = e.pageY - o.top;
+
+			if(relY < this.height + getTopOffset(m)
+				&& relY >  getTopOffset(m)) {
+				this.mapTooltipXPosition(relX);
+			} else {
+				this.tip.hideTip();
+			}
+		});
+	}
+
+	mapTooltipXPosition(relX) {
+		let s = this.state;
+		if(!s.yExtremes) return;
+
+		let index = getClosestInArray(relX, s.xAxis.positions, true);
+		let dbi = this.dataByIndex[index];
+
+		this.tip.setValues(
+			dbi.xPos + this.tip.offset.x,
+			dbi.yExtreme + this.tip.offset.y,
+			{name: dbi.formattedLabel, value: ''},
+			dbi.values,
+			index
+		);
+
+		this.tip.showTip();
+	}
+
+	renderLegend() {
+		let s = this.data;
+		if(s.datasets.length > 1) {
+			this.legendArea.textContent = '';
+			s.datasets.map((d, i) => {
+				let barWidth = AXIS_LEGEND_BAR_SIZE;
+				// let rightEndPoint = this.baseWidth - this.measures.margins.left - this.measures.margins.right;
+				// let multiplier = s.datasets.length - i;
+				let rect = legendBar(
+					// rightEndPoint - multiplier * barWidth,	// To right align
+					barWidth * i,
+					'0',
+					barWidth,
+					this.colors[i],
+					d.name);
+				this.legendArea.appendChild(rect);
+			});
+		}
+	}
+
+
+
+	// Overlay
+	makeOverlay() {
+		if(this.init) {
+			this.init = 0;
+			return;
+		}
+		if(this.overlayGuides) {
+			this.overlayGuides.forEach(g => {
+				let o = g.overlay;
+				o.parentNode.removeChild(o);
+			});
+		}
+
+		this.overlayGuides = this.dataUnitComponents.map(c => {
+			return {
+				type: c.unitType,
+				overlay: undefined,
+				units: c.units,
+			};
+		});
+
+		if(this.state.currentIndex === undefined) {
+			this.state.currentIndex = this.state.datasetLength - 1;
+		}
+
+		// Render overlays
+		this.overlayGuides.map(d => {
+			let currentUnit = d.units[this.state.currentIndex];
+
+			d.overlay = makeOverlay[d.type](currentUnit);
+			this.drawArea.appendChild(d.overlay);
+		});
+	}
+
+	updateOverlayGuides() {
+		if(this.overlayGuides) {
+			this.overlayGuides.forEach(g => {
+				let o = g.overlay;
+				o.parentNode.removeChild(o);
+			});
+		}
+	}
+
+	bindOverlay() {
+		this.parent.addEventListener('data-select', () => {
+			this.updateOverlay();
+		});
+	}
+
+	bindUnits() {
+		this.dataUnitComponents.map(c => {
+			c.units.map(unit => {
+				unit.addEventListener('click', () => {
+					let index = unit.getAttribute('data-point-index');
+					this.setCurrentDataPoint(index);
+				});
+			});
+		});
+
+		// Note: Doesn't work as tooltip is absolutely positioned
+		this.tip.container.addEventListener('click', () => {
+			let index = this.tip.container.getAttribute('data-point-index');
+			this.setCurrentDataPoint(index);
+		});
+	}
+
+	updateOverlay() {
+		this.overlayGuides.map(d => {
+			let currentUnit = d.units[this.state.currentIndex];
+			updateOverlay[d.type](currentUnit, d.overlay);
+		});
+	}
+
+	onLeftArrow() {
+		this.setCurrentDataPoint(this.state.currentIndex - 1);
+	}
+
+	onRightArrow() {
+		this.setCurrentDataPoint(this.state.currentIndex + 1);
+	}
+
+	getDataPoint(index=this.state.currentIndex) {
+		let s = this.state;
+		let data_point = {
+			index: index,
+			label: s.xAxis.labels[index],
+			values: s.datasets.map(d => d.values[index])
+		};
+		return data_point;
+	}
+
+	setCurrentDataPoint(index) {
+		let s = this.state;
+		index = parseInt(index);
+		if(index < 0) index = 0;
+		if(index >= s.xAxis.labels.length) index = s.xAxis.labels.length - 1;
+		if(index === s.currentIndex) return;
+		s.currentIndex = index;
+		fire(this.parent, "data-select", this.getDataPoint());
+	}
+
+
+
+	// API
+	addDataPoint(label, datasetValues, index=this.state.datasetLength) {
+		super.addDataPoint(label, datasetValues, index);
+		this.data.labels.splice(index, 0, label);
+		this.data.datasets.map((d, i) => {
+			d.values.splice(index, 0, datasetValues[i]);
+		});
+		this.update(this.data);
+	}
+
+	removeDataPoint(index = this.state.datasetLength-1) {
+		if (this.data.labels.length <= 1) {
+			return;
+		}
+		super.removeDataPoint(index);
+		this.data.labels.splice(index, 1);
+		this.data.datasets.map(d => {
+			d.values.splice(index, 1);
+		});
+		this.update(this.data);
+	}
+
+	updateDataset(datasetValues, index=0) {
+		this.data.datasets[index].values = datasetValues;
+		this.update(this.data);
+	}
+	// addDataset(dataset, index) {}
+	// removeDataset(index = 0) {}
+
+	updateDatasets(datasets) {
+		this.data.datasets.map((d, i) => {
+			if(datasets[i]) {
+				d.values = datasets[i];
+			}
+		});
+		this.update(this.data);
+	}
+
+	// updateDataPoint(dataPoint, index = 0) {}
+	// addDataPoint(dataPoint, index = 0) {}
+	// removeDataPoint(index = 0) {}
+}
+
+const chartTypes = {
+	bar: AxisChart,
+	line: AxisChart,
+	// multiaxis: MultiAxisChart,
+	percentage: PercentageChart,
+	heatmap: Heatmap,
+	pie: PieChart
+};
+
+function getChartByType(chartType = 'line', parent, options) {
+	if (chartType === 'axis-mixed') {
+		options.type = 'line';
+		return new AxisChart(parent, options);
+	}
+
+	if (!chartTypes[chartType]) {
+		console.error("Undefined chart type: " + chartType);
+		return;
+	}
+
+	return new chartTypes[chartType](parent, options);
+}
+
+class Chart {
+	constructor(parent, options) {
+		return getChartByType(options.type, parent, options);
+	}
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/admin/components/StatisticsWidget.js":
+/*!**************************************************!*\
+  !*** ./src/admin/components/StatisticsWidget.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return StatisticsWidget; });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_components_DashboardWidget__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/DashboardWidget */ "flarum/components/DashboardWidget");
+/* harmony import */ var flarum_components_DashboardWidget__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_DashboardWidget__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_components_SelectDropdown__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/components/SelectDropdown */ "flarum/components/SelectDropdown");
+/* harmony import */ var flarum_components_SelectDropdown__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_components_SelectDropdown__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/helpers/icon */ "flarum/helpers/icon");
+/* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var flarum_utils_abbreviateNumber__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/utils/abbreviateNumber */ "flarum/utils/abbreviateNumber");
+/* harmony import */ var flarum_utils_abbreviateNumber__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_utils_abbreviateNumber__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var frappe_charts_dist_frappe_charts_esm_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! frappe-charts/dist/frappe-charts.esm.js */ "./node_modules/frappe-charts/dist/frappe-charts.esm.js");
+
+
+/*
+ * This file is part of Flarum.
+ *
+ * (c) Toby Zerner <toby.zerner@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+
+
+
+
+
+
+var StatisticsWidget =
+/*#__PURE__*/
+function (_DashboardWidget) {
+  Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(StatisticsWidget, _DashboardWidget);
+
+  function StatisticsWidget() {
+    return _DashboardWidget.apply(this, arguments) || this;
+  }
+
+  var _proto = StatisticsWidget.prototype;
+
+  _proto.init = function init() {
+    _DashboardWidget.prototype.init.call(this); // Create a Date object which represents the start of the day in the
+    // configured timezone. To do this we convert a UTC time into that timezone,
+    // reset to the first hour of the day, and then convert back into UTC time.
+    // We'll be working with seconds rather than milliseconds throughout too.
+
+
+    var today = new Date();
+    today.setTime(today.getTime() + app.data.statistics.timezoneOffset * 1000);
+    today.setUTCHours(0, 0, 0, 0);
+    today.setTime(today.getTime() - app.data.statistics.timezoneOffset * 1000);
+    today = today / 1000;
+    this.entities = ['users', 'discussions', 'posts'];
+    this.periods = {
+      today: {
+        start: today,
+        end: today + 86400,
+        step: 3600
+      },
+      last_7_days: {
+        start: today - 86400 * 7,
+        end: today,
+        step: 86400
+      },
+      last_28_days: {
+        start: today - 86400 * 28,
+        end: today,
+        step: 86400
+      },
+      last_12_months: {
+        start: today - 86400 * 364,
+        end: today,
+        step: 86400 * 7
+      }
+    };
+    this.selectedEntity = 'users';
+    this.selectedPeriod = 'last_7_days';
+  };
+
+  _proto.className = function className() {
+    return 'StatisticsWidget';
+  };
+
+  _proto.content = function content() {
+    var _this = this;
+
+    var thisPeriod = this.periods[this.selectedPeriod];
+    return m("div", {
+      className: "StatisticsWidget-table"
+    }, m("div", {
+      className: "StatisticsWidget-labels"
+    }, m("div", {
+      className: "StatisticsWidget-label"
+    }, app.translator.trans('flarum-statistics.admin.statistics.total_label')), m("div", {
+      className: "StatisticsWidget-label"
+    }, m(flarum_components_SelectDropdown__WEBPACK_IMPORTED_MODULE_2___default.a, {
+      buttonClassName: "Button Button--text",
+      caretIcon: "fas fa-caret-down"
+    }, Object.keys(this.periods).map(function (period) {
+      return m(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default.a, {
+        active: period === _this.selectedPeriod,
+        onclick: _this.changePeriod.bind(_this, period),
+        icon: period === _this.selectedPeriod ? 'fas fa-check' : true
+      }, app.translator.trans("flarum-statistics.admin.statistics." + period + "_label"));
+    })))), this.entities.map(function (entity) {
+      var totalCount = _this.getTotalCount(entity);
+
+      var thisPeriodCount = _this.getPeriodCount(entity, thisPeriod);
+
+      var lastPeriodCount = _this.getPeriodCount(entity, _this.getLastPeriod(thisPeriod));
+
+      var periodChange = lastPeriodCount > 0 && (thisPeriodCount - lastPeriodCount) / lastPeriodCount * 100;
+      var extra = '';
+
+      if (entity === 'users') {
+        var activeUsersCount = _this.getPeriodCount('activeUsers', thisPeriod);
+
+        extra = m("span", {
+          className: "StatisticsWidget-extra",
+          title: activeUsersCount
+        }, app.translator.trans('flarum-statistics.admin.statistics.active_users_text', {
+          count: flarum_utils_abbreviateNumber__WEBPACK_IMPORTED_MODULE_5___default()(activeUsersCount)
+        }));
+      }
+
+      return m("a", {
+        className: 'StatisticsWidget-entity' + (_this.selectedEntity === entity ? ' active' : ''),
+        onclick: _this.changeEntity.bind(_this, entity)
+      }, m("h3", {
+        className: "StatisticsWidget-heading"
+      }, app.translator.trans('flarum-statistics.admin.statistics.' + entity + '_heading')), m("div", {
+        className: "StatisticsWidget-total",
+        title: totalCount
+      }, flarum_utils_abbreviateNumber__WEBPACK_IMPORTED_MODULE_5___default()(totalCount)), m("div", {
+        className: "StatisticsWidget-period",
+        title: thisPeriodCount
+      }, flarum_utils_abbreviateNumber__WEBPACK_IMPORTED_MODULE_5___default()(thisPeriodCount), ' ', periodChange ? m("span", {
+        className: 'StatisticsWidget-change StatisticsWidget-change--' + (periodChange > 0 ? 'up' : 'down')
+      }, flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_4___default()('fas fa-arrow-' + (periodChange > 0 ? 'up' : 'down')), Math.abs(periodChange.toFixed(1)), "%") : '', extra));
+    }), m("div", {
+      className: "StatisticsWidget-chart",
+      config: this.drawChart.bind(this)
+    }));
+  };
+
+  _proto.drawChart = function drawChart(elm, isInitialized, context) {
+    if (context.chart && context.entity === this.selectedEntity && context.period === this.selectedPeriod) {
+      return;
+    }
+
+    var offset = app.data.statistics.timezoneOffset;
+    var period = this.periods[this.selectedPeriod];
+    var periodLength = period.end - period.start;
+    var labels = [];
+    var thisPeriod = [];
+    var lastPeriod = [];
+
+    for (var i = period.start; i < period.end; i += period.step) {
+      var label = void 0;
+
+      if (period.step < 86400) {
+        label = moment.unix(i + offset).utc().format('h A');
+      } else {
+        label = moment.unix(i + offset).utc().format('D MMM');
+
+        if (period.step > 86400) {
+          label += ' - ' + moment.unix(i + offset + period.step - 1).utc().format('D MMM');
+        }
+      }
+
+      labels.push(label);
+      thisPeriod.push(this.getPeriodCount(this.selectedEntity, {
+        start: i,
+        end: i + period.step
+      }));
+      lastPeriod.push(this.getPeriodCount(this.selectedEntity, {
+        start: i - periodLength,
+        end: i - periodLength + period.step
+      }));
+    }
+
+    var datasets = [{
+      values: lastPeriod
+    }, {
+      values: thisPeriod
+    }];
+    var data = {
+      labels: labels,
+      datasets: datasets
+    };
+
+    if (!context.chart) {
+      context.chart = new frappe_charts_dist_frappe_charts_esm_js__WEBPACK_IMPORTED_MODULE_6__["Chart"](elm, {
+        data: data,
+        type: 'line',
+        height: 280,
+        axisOptions: {
+          xAxisMode: 'tick',
+          yAxisMode: 'span',
+          xIsSeries: true
+        },
+        lineOptions: {
+          hideDots: 1
+        },
+        colors: ['black', app.forum.attribute('themePrimaryColor')]
+      });
+    } else {
+      context.chart.update(data);
+    }
+
+    context.entity = this.selectedEntity;
+    context.period = this.selectedPeriod;
+  };
+
+  _proto.changeEntity = function changeEntity(entity) {
+    this.selectedEntity = entity;
+  };
+
+  _proto.changePeriod = function changePeriod(period) {
+    this.selectedPeriod = period;
+  };
+
+  _proto.getTotalCount = function getTotalCount(entity) {
+    return app.data.statistics[entity].total;
+  };
+
+  _proto.getPeriodCount = function getPeriodCount(entity, period) {
+    var timed = app.data.statistics[entity].timed;
+    var count = 0;
+
+    for (var time in timed) {
+      if (time >= period.start && time < period.end) {
+        count += timed[time];
+      }
+    }
+
+    return count;
+  };
+
+  _proto.getLastPeriod = function getLastPeriod(thisPeriod) {
+    return {
+      start: thisPeriod.start - (thisPeriod.end - thisPeriod.start),
+      end: thisPeriod.start
+    };
+  };
+
+  return StatisticsWidget;
+}(flarum_components_DashboardWidget__WEBPACK_IMPORTED_MODULE_1___default.a);
+
+
+
+/***/ }),
+
+/***/ "./src/admin/index.js":
+/*!****************************!*\
+  !*** ./src/admin/index.js ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/extend */ "flarum/extend");
+/* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_extend__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_components_DashboardPage__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/components/DashboardPage */ "flarum/components/DashboardPage");
+/* harmony import */ var flarum_components_DashboardPage__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_components_DashboardPage__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_StatisticsWidget__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/StatisticsWidget */ "./src/admin/components/StatisticsWidget.js");
+
+
+
+
+flarum_app__WEBPACK_IMPORTED_MODULE_0___default.a.initializers.add('flarum-statistics', function () {
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_1__["extend"])(flarum_components_DashboardPage__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'availableWidgets', function (widgets) {
+    widgets.push(m(_components_StatisticsWidget__WEBPACK_IMPORTED_MODULE_3__["default"], null));
+  });
+});
+
+/***/ }),
+
+/***/ "flarum/app":
+/*!********************************************!*\
+  !*** external "flarum.core.compat['app']" ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['app'];
+
+/***/ }),
+
+/***/ "flarum/components/Button":
+/*!**********************************************************!*\
+  !*** external "flarum.core.compat['components/Button']" ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/Button'];
+
+/***/ }),
+
+/***/ "flarum/components/DashboardPage":
+/*!*****************************************************************!*\
+  !*** external "flarum.core.compat['components/DashboardPage']" ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/DashboardPage'];
+
+/***/ }),
+
+/***/ "flarum/components/DashboardWidget":
+/*!*******************************************************************!*\
+  !*** external "flarum.core.compat['components/DashboardWidget']" ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/DashboardWidget'];
+
+/***/ }),
+
+/***/ "flarum/components/SelectDropdown":
+/*!******************************************************************!*\
+  !*** external "flarum.core.compat['components/SelectDropdown']" ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/SelectDropdown'];
+
+/***/ }),
+
+/***/ "flarum/extend":
+/*!***********************************************!*\
+  !*** external "flarum.core.compat['extend']" ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['extend'];
+
+/***/ }),
+
+/***/ "flarum/helpers/icon":
+/*!*****************************************************!*\
+  !*** external "flarum.core.compat['helpers/icon']" ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['helpers/icon'];
+
+/***/ }),
+
+/***/ "flarum/utils/abbreviateNumber":
+/*!***************************************************************!*\
+  !*** external "flarum.core.compat['utils/abbreviateNumber']" ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['utils/abbreviateNumber'];
+
+/***/ })
+
+/******/ });
 //# sourceMappingURL=admin.js.map
