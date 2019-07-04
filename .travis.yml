@@ -1,6 +1,4 @@
-language: minimal
-
-sudo: false
+language: generic
 
 cache:
   directories:
